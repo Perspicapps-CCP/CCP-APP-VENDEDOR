@@ -5,7 +5,7 @@ import { LocalizationService } from '../services/localization.service';
 @Pipe({
   name: 'localDate',
   standalone: true,
-  pure: false
+  pure: false,
 })
 export class LocalDatePipe implements PipeTransform {
   private lastValue: any;

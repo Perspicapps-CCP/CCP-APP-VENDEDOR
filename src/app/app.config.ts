@@ -1,5 +1,10 @@
 import { ApplicationConfig, importProvidersFrom, LOCALE_ID } from '@angular/core';
-import { PreloadAllModules, provideRouter, RouteReuseStrategy, withPreloading } from '@angular/router';
+import {
+  PreloadAllModules,
+  provideRouter,
+  RouteReuseStrategy,
+  withPreloading,
+} from '@angular/router';
 import { IonicRouteStrategy } from '@ionic/angular';
 
 import { provideIonicAngular } from '@ionic/angular/standalone';
@@ -34,10 +39,10 @@ export const appConfig: ApplicationConfig = {
         loader: {
           provide: TranslateLoader,
           useFactory: createTranslateLoader,
-          deps: [HttpClient]
+          deps: [HttpClient],
         },
-        defaultLanguage: 'en'
-      })
-    )
-  ]
+        defaultLanguage: 'en',
+      }),
+    ),
+  ],
 };

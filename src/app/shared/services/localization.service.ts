@@ -11,34 +11,52 @@ import localeEsES from '@angular/common/locales/es';
 import localeEnUS from '@angular/common/locales/en';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LocalizationService {
   // Configuraciones disponibles
   public availableLanguages: LanguageConfig[] = [
-    { langCode: 'es', localeCode: 'es-CO', name: 'Español (Colombia)', currencyCode: 'COP', region: 'Colombia' },
-    { langCode: 'es', localeCode: 'es-ES', name: 'Español (España)', currencyCode: 'EUR', region: 'España' },
-    { langCode: 'en', localeCode: 'en-US', name: 'English (US)', currencyCode: 'USD', region: 'United States' }
+    {
+      langCode: 'es',
+      localeCode: 'es-CO',
+      name: 'Español (Colombia)',
+      currencyCode: 'COP',
+      region: 'Colombia',
+    },
+    {
+      langCode: 'es',
+      localeCode: 'es-ES',
+      name: 'Español (España)',
+      currencyCode: 'EUR',
+      region: 'España',
+    },
+    {
+      langCode: 'en',
+      localeCode: 'en-US',
+      name: 'English (US)',
+      currencyCode: 'USD',
+      region: 'United States',
+    },
   ];
 
   // Único subject para manejar toda la información de localización
   private currentLocalizationSubject = new BehaviorSubject<LanguageConfig>(
-    this.availableLanguages.find(l => l.localeCode === 'en-US') || this.availableLanguages[0]
+    this.availableLanguages.find(l => l.localeCode === 'en-US') || this.availableLanguages[0],
   );
   public currentLocalization$ = this.currentLocalizationSubject.asObservable();
 
   // Derivamos los observables específicos a partir del principal
   public currentLocale$: Observable<string> = this.currentLocalization$.pipe(
-    map(config => config?.localeCode || 'en-US')
+    map(config => config?.localeCode || 'en-US'),
   );
 
   public currentLang$: Observable<string> = this.currentLocalization$.pipe(
-    map(config => config?.langCode || 'en')
+    map(config => config?.langCode || 'en'),
   );
 
   constructor(
     @Inject(LOCALE_ID) private localeId: string,
-    private translateService: TranslateService
+    private translateService: TranslateService,
   ) {
     // Registramos todos los locales
     registerLocaleData(localeEsCO);
@@ -126,7 +144,7 @@ export class LocalizationService {
 
     // Buscamos una configuración con el mismo idioma y la nueva región
     const newLocaleConfig = this.availableLanguages.find(
-      l => l.langCode === currentLang && l.localeCode.endsWith(`-${regionCode}`)
+      l => l.langCode === currentLang && l.localeCode.endsWith(`-${regionCode}`),
     );
 
     if (newLocaleConfig) {

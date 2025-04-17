@@ -1,19 +1,22 @@
 <div id="container">
   <p>
     Explore
-    <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components
+    <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components"
+      >UI Components
       {{ 'HOME.TITLE' | translate }}
     </a>
   </p>
 
   <ion-item>
     <ion-label>{{ 'SETTINGS.LANGUAGE' | translate }}</ion-label>
-    <ion-select [(ngModel)]="selectedConfig" (ionChange)="changeLanguage($event.detail.value)"
+    <ion-select
+      [(ngModel)]="selectedConfig"
+      (ionChange)="changeLanguage($event.detail.value)"
       [compareWith]="compareWith">
       @for (lang of availableLanguages; track lang.localeCode) {
-      <ion-select-option [value]="lang">
-        {{ lang.name }}
-      </ion-select-option>
+        <ion-select-option [value]="lang">
+          {{ lang.name }}
+        </ion-select-option>
       }
     </ion-select>
   </ion-item>
@@ -23,12 +26,12 @@
 
     <ion-item>
       <ion-label>{{ 'SETTINGS.CURREN_LANGUAJE' | translate }}</ion-label>
-      <div slot="end">{{selectedLanguage}}</div>
+      <div slot="end">{{ selectedLanguage }}</div>
     </ion-item>
 
     <ion-item>
       <ion-label>{{ 'SETTINGS.CURRENT_LOCALE' | translate }}</ion-label>
-      <div slot="end">{{selectedLocale}}</div>
+      <div slot="end">{{ selectedLocale }}</div>
     </ion-item>
 
     <!-- Ejemplo de formato de moneda -->
@@ -46,7 +49,7 @@
     <!-- Ejemplo de la hora -->
     <ion-item>
       <ion-label>{{ 'SETTINGS.TIME_FORMAT' | translate }}</ion-label>
-      <div slot="end">{{ currentDate | localDate:'shortTime' }}</div>
+      <div slot="end">{{ currentDate | localDate: 'shortTime' }}</div>
     </ion-item>
   </div>
 

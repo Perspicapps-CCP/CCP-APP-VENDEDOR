@@ -1,10 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {
-  IonItem, IonLabel,
-  IonSelect, IonSelectOption
-} from '@ionic/angular/standalone';
+import { IonItem, IonLabel, IonSelect, IonSelectOption } from '@ionic/angular/standalone';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { LanguageConfig } from '../shared/models/LanguajeConfig.interface';
@@ -25,8 +22,8 @@ import { LocalizationService } from '../shared/services/localization.service';
     IonItem,
     CommonModule,
     LocalDatePipe,
-    LocalCurrencyPipe
-  ]
+    LocalCurrencyPipe,
+  ],
 })
 export class ExploreContainerComponent implements OnInit, OnDestroy {
   // Valores de ejemplo para mostrar formateo
@@ -61,7 +58,6 @@ export class ExploreContainerComponent implements OnInit, OnDestroy {
       this.selectedLocale = locale;
       console.log('Locale actualizado:', locale);
     });
-
   }
 
   ngOnDestroy() {
@@ -76,7 +72,7 @@ export class ExploreContainerComponent implements OnInit, OnDestroy {
 
   // Método para cambiar el idioma/localización
   changeLanguage(config: LanguageConfig) {
-    console.log("Configuración seleccionada:", config);
+    console.log('Configuración seleccionada:', config);
     if (config && config.localeCode) {
       // Aplicamos el cambio usando el localeCode
       this.localizationService.setLocale(config.localeCode);

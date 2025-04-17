@@ -9,8 +9,9 @@ import { TranslateService } from '@ngx-translate/core';
   imports: [IonApp, IonRouterOutlet],
 })
 export class AppComponent {
-  constructor(private platform: Platform,
-    private translate: TranslateService
+  constructor(
+    private platform: Platform,
+    private translate: TranslateService,
   ) {
     this.initializeApp();
   }
