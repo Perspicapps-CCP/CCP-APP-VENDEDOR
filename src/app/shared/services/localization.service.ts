@@ -3,12 +3,11 @@ import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 
-import { LanguageConfig } from '../models/LanguajeConfig.interface';
-
 // Importamos todos los locales que necesitamos
 import localeEsCO from '@angular/common/locales/es-CO';
 import localeEsES from '@angular/common/locales/es';
 import localeEnUS from '@angular/common/locales/en';
+import { LanguageConfig } from '../modelos/LanguajeConfig.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -19,14 +18,14 @@ export class LocalizationService {
     {
       langCode: 'es',
       localeCode: 'es-CO',
-      name: 'Español (Colombia)',
+      name: 'Español (CO)',
       currencyCode: 'COP',
       region: 'Colombia',
     },
     {
       langCode: 'es',
       localeCode: 'es-ES',
-      name: 'Español (España)',
+      name: 'Español (ES)',
       currencyCode: 'EUR',
       region: 'España',
     },
@@ -173,33 +172,6 @@ export class LocalizationService {
 
   public getCurrencyCode(): string {
     return this.getCurrentLocalization()?.currencyCode || 'USD';
-  }
-
-  // Métodos de conveniencia
-  public switchToSpanishColombia(): void {
-    this.setLocale('es-CO');
-  }
-
-  public switchToSpanishSpain(): void {
-    this.setLocale('es-ES');
-  }
-
-  public switchToEnglishUS(): void {
-    this.setLocale('en-US');
-  }
-
-  // Helper para verificar el formato actual
-  public isColombianFormat(): boolean {
-    return this.getLocale() === 'es-CO';
-  }
-
-  public isSpanishFormat(): boolean {
-    return this.getLocale() === 'es-ES';
-  }
-
-  // Obtenemos todas las regiones disponibles para un idioma específico
-  public getAvailableRegionsForLanguage(langCode: string): LanguageConfig[] {
-    return this.availableLanguages.filter(l => l.langCode === langCode);
   }
 
   public getAllAvailableLanguages(): LanguageConfig[] {

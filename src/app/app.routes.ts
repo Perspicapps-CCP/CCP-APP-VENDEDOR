@@ -18,6 +18,14 @@ export const routes: Routes = [
           import('./modules/clientes/clientes.routes').then(m => m.CLIENTES_ROUTES),
       },
       {
+        path: 'visitas',
+        loadChildren: () => import('./modules/visitas/visitas.routes').then(m => m.VISITAS_ROUTES),
+      },
+      {
+        path: 'rutas',
+        loadChildren: () => import('./modules/rutas/rutas.routes').then(m => m.RUTAS_ROUTES),
+      },
+      {
         path: '',
         redirectTo: 'clientes',
         pathMatch: 'full',
