@@ -1,7 +1,12 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
+import { ActivatedRoute, Routes, provideRouter } from '@angular/router';
+import { provideLocationMocks } from '@angular/common/testing';
 
 import { LayoutComponent } from './layout.component';
+
+// Definimos algunas rutas de prueba si es necesario
+const routes: Routes = [{ path: '', component: LayoutComponent }];
 
 describe('LayoutComponent', () => {
   let component: LayoutComponent;
@@ -9,8 +14,21 @@ describe('LayoutComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [LayoutComponent],
-      imports: [IonicModule.forRoot()],
+      imports: [IonicModule.forRoot(), LayoutComponent],
+      providers: [
+        provideRouter(routes),
+        provideLocationMocks(),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              paramMap: {
+                get: () => 'testId',
+              },
+            },
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LayoutComponent);

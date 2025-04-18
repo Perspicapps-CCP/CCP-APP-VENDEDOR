@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss'],
   imports: [IonicModule, MatIconModule],
+  standalone: true,
 })
 export class LayoutComponent {
   public environmentInjector = inject(EnvironmentInjector);

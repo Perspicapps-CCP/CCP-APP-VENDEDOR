@@ -9,8 +9,10 @@ describe('ChangePasswordComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ChangePasswordComponent],
-      imports: [IonicModule.forRoot()],
+      imports: [
+        IonicModule.forRoot(),
+        ChangePasswordComponent, // Importar el componente en lugar de declararlo
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ChangePasswordComponent);
