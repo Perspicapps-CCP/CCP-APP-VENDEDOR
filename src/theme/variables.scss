@@ -6,7 +6,7 @@
 // Configuración de tipografía global
 :root {
   // Fuente principal
-  --ion-font-family: 'Lato', sans-serif;
+  --ion-font-family: "Lato", sans-serif;
 
   // Pesos de fuente
   --ion-font-weight-thin: 100;
@@ -26,6 +26,10 @@
   --ion-text-md: 16px;
   --ion-text-lg: 18px;
   --ion-text-xl: 20px;
+
+  // Configuración de fondo para los cards
+  --ion-card-background-color: #f8f9fa;
+  --mdc-outlined-card-container-color: #f8f9fa;
 }
 
 // Configuraciones específicas para modo oscuro
