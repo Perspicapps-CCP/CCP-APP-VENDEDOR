@@ -60,11 +60,11 @@ export class LoginComponent {
     const loginForm = this.loginForm.value;
     if (loginForm.username && loginForm.password) {
       this.loginService.iniciarSesion(loginForm.username, loginForm.password).subscribe({
-        error: () => {
+        error: error => {
+          console.error('AUTH-ERROR: Fallo en login', JSON.stringify(error));
+          debugger;
           this.translate.get('LOGIN.ERROR_MESSAGE').subscribe((mensaje: string) => {
-            this._snackBar.open(mensaje, '', {
-              horizontalPosition: 'end',
-              verticalPosition: 'top',
+            this._snackBar.open(mensaje + error.message, '', {
               duration: 3000,
             });
           });
