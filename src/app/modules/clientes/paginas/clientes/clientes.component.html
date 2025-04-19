@@ -75,6 +75,11 @@
             </div>
           </div>
         </mat-card>
+      } @empty {
+        <div class="flex gap-2">
+          <mat-icon>person</mat-icon>
+          <p>{{ 'CLIENTES.NO_CLIENTS' | translate }}</p>
+        </div>
       }
     </div>
   </div>

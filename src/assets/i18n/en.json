@@ -21,7 +21,8 @@
     "NO_RESENT_VISIT": "Clients without recent visits",
     "CLIENT_DETAIL_BTN": "View Client",
     "SEE_DETAIL_BTN": "See Detail",
-    "CLIENT_NOT_RECENT_VISIT": "Client without recent visit"
+    "CLIENT_NOT_RECENT_VISIT": "Client without recent visit",
+    "NO_CLIENTS": "No clients found"
   },
   "RUTAS": {
     "TITLE": "Routes",
