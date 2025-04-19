@@ -25,17 +25,6 @@
 @use "@ionic/angular/css/text-transformation.css";
 @use "@ionic/angular/css/flex-utils.css";
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
-
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@use "@ionic/angular/css/palettes/dark.system.css";
-
 @use "@angular/material" as mat;
 
 @use "scss/custom-bootstrap";
@@ -147,4 +136,11 @@ strong.highlight {
 .gm-style .gm-style-iw-t button {
   top: 0 !important;
   right: 0 !important;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }

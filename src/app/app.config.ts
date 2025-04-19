@@ -13,17 +13,20 @@ import {
   withInterceptors,
   withInterceptorsFromDi,
 } from '@angular/common/http';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideIonicAngular } from '@ionic/angular/standalone';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { routes } from './app.routes';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 // Importaciones para localización
 import { registerLocaleData } from '@angular/common';
 import localeEnUS from '@angular/common/locales/en';
 import localeEsES from '@angular/common/locales/es';
 import localeEsCO from '@angular/common/locales/es-CO';
+import { MAT_CARD_CONFIG } from '@angular/material/card';
+import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
+import { MAT_MENU_DEFAULT_OPTIONS } from '@angular/material/menu';
 import { httpHeadersInterceptor } from './shared/interceptores/http-headers.interceptor';
 import { httpSpinnerInterceptor } from './shared/interceptores/http-spinner.interceptor';
 
@@ -42,12 +45,12 @@ export const appConfig: ApplicationConfig = {
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: LOCALE_ID, useValue: 'en-US' }, // Locale por defecto
     provideIonicAngular(),
-    provideAnimations(),
     provideRouter(routes, withPreloading(PreloadAllModules)),
     provideHttpClient(
       withInterceptorsFromDi(),
       withInterceptors([httpHeadersInterceptor, httpSpinnerInterceptor]),
     ),
+    provideAnimations(),
     importProvidersFrom(
       TranslateModule.forRoot({
         loader: {
@@ -58,5 +61,22 @@ export const appConfig: ApplicationConfig = {
         defaultLanguage: 'en',
       }),
     ),
+    {
+      provide: MAT_CARD_CONFIG,
+      useValue: { appearance: 'outlined' },
+    },
+    {
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useValue: {
+        hasBackdrop: true,
+        panelClass: 'white-dialog-container',
+      },
+    },
+    {
+      provide: MAT_MENU_DEFAULT_OPTIONS,
+      useValue: {
+        overlayPanelClass: 'white-menu-panel',
+      },
+    },
   ],
 };

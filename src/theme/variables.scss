@@ -31,11 +31,3 @@
   --ion-card-background-color: #f8f9fa;
   --mdc-outlined-card-container-color: #f8f9fa;
 }
-
-// Configuraciones específicas para modo oscuro
-@media (prefers-color-scheme: dark) {
-  :root {
-    // Mantener las mismas configuraciones de tipografía en modo oscuro
-    // Pero puedes ajustar otras propiedades si lo deseas
-  }
-}

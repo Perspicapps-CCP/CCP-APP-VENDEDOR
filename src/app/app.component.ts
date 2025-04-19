@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
-import { Platform } from '@ionic/angular';
 
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { LocalizationService } from './shared/services/localization.service';

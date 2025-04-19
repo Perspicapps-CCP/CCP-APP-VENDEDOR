@@ -14,5 +14,19 @@
       "USERNAME_MIN_LENGTH": "User must be at least 3 characters long",
       "PASSWORD_MIN_LENGTH": "Password must be at least 6 characters long"
     }
+  },
+  "CLIENTES": {
+    "TITLE": "Clientes",
+    "SEARCH_PLACEHOLDER": "Filtrar Clientes",
+    "NO_RESENT_VISIT": "Clientes sin visita reciente",
+    "CLIENT_DETAIL_BTN": "Ver Cliente"
+  },
+  "RUTAS": {
+    "TITLE": "Rutas",
+    "SEARCH_PLACEHOLDER": "Filtrar Rutas"
+  },
+  "VISITAS": {
+    "TITLE": "Visitas",
+    "SEARCH_PLACEHOLDER": "Filtrar Visitas"
   }
 }

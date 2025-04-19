@@ -35,6 +35,8 @@
             ],
             "styles": [
               "src/global.scss",
+              "@angular/material/prebuilt-themes/azure-blue.css",
+              "src/theme/variables.scss",
               "node_modules/ngx-spinner/animations/ball-clip-rotate.css"
             ],
             "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"],
