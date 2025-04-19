@@ -1,4 +1,4 @@
-package io.ionic.starter; // Tu paquete puede ser diferente
+package com.proyecto_grupo_3_vendedor.ccp; // Tu paquete puede ser diferente
 
 import android.os.Bundle;
 import android.view.View;

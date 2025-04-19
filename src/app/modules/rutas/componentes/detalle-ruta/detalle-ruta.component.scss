@@ -1,0 +1,15 @@
+.map-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+::ng-deep .map-container google-map {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100% !important;
+  width: 100% !important;
+}

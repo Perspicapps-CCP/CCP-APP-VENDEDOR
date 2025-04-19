@@ -16,17 +16,24 @@
     }
   },
   "CLIENTES": {
-    "TITLE": "Clientes",
-    "SEARCH_PLACEHOLDER": "Filtrar Clientes",
-    "NO_RESENT_VISIT": "Clientes sin visita reciente",
-    "CLIENT_DETAIL_BTN": "Ver Cliente"
+    "TITLE": "Clients",
+    "SEARCH_PLACEHOLDER": "Filter Clients",
+    "NO_RESENT_VISIT": "Clients without recent visits",
+    "CLIENT_DETAIL_BTN": "View Client"
   },
   "RUTAS": {
-    "TITLE": "Rutas",
-    "SEARCH_PLACEHOLDER": "Filtrar Rutas"
+    "TITLE": "Routes",
+    "SEARCH_PLACEHOLDER": "Filter Routes",
+    "DETALLE_RUTA": {
+      "TITLE": "Route Detail",
+      "SEARCH_PLACEHOLDER": "Filter Route Detail",
+      "NO_RESENT_VISIT": "Routes without recent visits",
+      "CLIENT_DETAIL_BTN": "View Client"
+    },
+    "NO_ROUTES": "No routes found"
   },
   "VISITAS": {
-    "TITLE": "Visitas",
-    "SEARCH_PLACEHOLDER": "Filtrar Visitas"
+    "TITLE": "Visits",
+    "SEARCH_PLACEHOLDER": "Filter Visits"
   }
 }
