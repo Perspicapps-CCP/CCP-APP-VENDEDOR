@@ -19,7 +19,9 @@
     "TITLE": "Clients",
     "SEARCH_PLACEHOLDER": "Filter Clients",
     "NO_RESENT_VISIT": "Clients without recent visits",
-    "CLIENT_DETAIL_BTN": "View Client"
+    "CLIENT_DETAIL_BTN": "View Client",
+    "SEE_DETAIL_BTN": "See Detail",
+    "CLIENT_NOT_RECENT_VISIT": "Client without recent visit"
   },
   "RUTAS": {
     "TITLE": "Routes",

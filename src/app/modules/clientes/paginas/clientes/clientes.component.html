@@ -1,11 +1,81 @@
 <ion-header>
   <ion-toolbar class="px-[1.25rem]">
     <ion-title> {{ 'CLIENTES.TITLE' | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrarSesion()">
+        <mat-icon style="color: var(--bs-gray-600)" slot="icon-only">logout</mat-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div class="content">
-    <p>clientes works!</p>
+    <div class="w-full">
+      <div class="flex input-group w-full">
+        <span class="input-group-text pr-2!">
+          <mat-icon style="font-size: 16px; width: 16px; height: 16px">manage_search</mat-icon>
+        </span>
+        <input
+          class="form-control border-l-0!"
+          placeholder="{{ 'RUTAS.SEARCH_PLACEHOLDER' | translate }}"
+          [formControl]="formBusquedaClientes" />
+      </div>
+    </div>
+    <div class="list">
+      @for (cliente of filterClientes$ | async; track cliente.customer_id) {
+        <mat-card appearance="raised" class="card-content">
+          <div class="header-card">
+            <span
+              [innerHTML]="
+                cliente.customer_name | highlightText: formBusquedaClientes.value ?? ''
+              "></span>
+          </div>
+          <div class="content-card">
+            <div class="image-customer">
+              <img [src]="cliente.customer_image" [alt]="'image ' + cliente.customer_name" />
+            </div>
+            <div class="content-customer">
+              @if (cliente.isRecentVisit) {
+                <div>
+                  <div class="bage-recent-visit">
+                    <span>{{ 'CLIENTES.CLIENT_NOT_RECENT_VISIT' | translate }}</span>
+                  </div>
+                </div>
+              }
+
+              <div class="item-customer">
+                <mat-icon class="material-symbols-rounded">id_card</mat-icon>
+                <span
+                  [innerHTML]="
+                    cliente.identification | highlightText: formBusquedaClientes.value ?? ''
+                  "></span>
+              </div>
+
+              <div class="item-customer">
+                <mat-icon class="material-symbols-rounded">distance</mat-icon>
+                <span
+                  [innerHTML]="
+                    cliente.address | highlightText: formBusquedaClientes.value ?? ''
+                  "></span>
+              </div>
+
+              <div class="item-customer">
+                <mat-icon class="material-symbols-rounded">call</mat-icon>
+                <span
+                  [innerHTML]="
+                    cliente.phone | highlightText: formBusquedaClientes.value ?? ''
+                  "></span>
+              </div>
+              <div>
+                <button type="button" class="btn btn-dark-primary">
+                  {{ 'CLIENTES.SEE_DETAIL_BTN' | translate }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </mat-card>
+      }
+    </div>
   </div>
 </ion-content>

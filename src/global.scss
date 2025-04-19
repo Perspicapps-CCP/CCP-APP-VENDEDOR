@@ -62,6 +62,19 @@ strong.highlight {
   line-height: 1.5;
 }
 
+.standard-icon {
+  font-family: "Material Icons", sans-serif;
+}
+
+.rounded-icon {
+  font-family: "Material Icons Round", sans-serif;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 40;
+}
+
 /** custom maps styles */
 /* Estilos para el InfoWindow personalizado */
 /* Estos estilos se pueden agregar globalmente (styles.scss) o usar Angular ViewEncapsulation.None */
@@ -155,4 +168,19 @@ strong.highlight {
     overflow: auto;
     gap: 0.75rem;
   }
+}
+
+.btn-dark-primary {
+  --bs-btn-font-weight: 600;
+  --bs-btn-color: var(--primary-700);
+  --bs-btn-bg: transparent;
+  --bs-btn-hover-color: var(--primary-700);
+  --bs-btn-hover-bg: #{shade-color(--primary-700, 10%)};
+  --bs-btn-hover-border-color: #{shade-color(--primary-700, 10%)};
+  --bs-btn-focus-shadow-rgb: var(--primary-700);
+  --bs-btn-active-color: var(--primary-700);
+  --bs-btn-active-bg: #{shade-color(--primary-700, 20%)};
+  --bs-btn-active-border-color: #{shade-color(--primary-700, 20%)};
+  font-weight: normal;
+  font-size: 0.875rem;
 }

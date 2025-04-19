@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { Ruta } from '../interfaces/ruta.interface';
-import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
 import { LocalDatePipe } from 'src/app/shared/pipes/local-date.pipe';
 import { LocalizationService } from 'src/app/shared/services/localization.service';
+import { environment } from 'src/environments/environment';
+import { Ruta } from '../interfaces/ruta.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -30,20 +30,6 @@ export class RutasService {
       }),
       map((rutas: any) => {
         return rutas.route;
-      }),
-      catchError(error => {
-        console.error(
-          'ERROR_RUTAS: Error detallado:',
-          JSON.stringify({
-            error: error,
-            status: error.status,
-            message: error.message,
-            details: error.error,
-          }),
-        );
-
-        console.error('ERROR_RUTAS:', JSON.stringify(error));
-        return throwError(() => error);
       }),
     );
   }
