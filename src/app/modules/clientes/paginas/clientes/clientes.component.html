@@ -2,6 +2,9 @@
   <ion-toolbar class="px-[1.25rem]">
     <ion-title> {{ 'CLIENTES.TITLE' | translate }}</ion-title>
     <ion-buttons slot="end">
+      <ion-button (click)="obtenerClientes()">
+        <mat-icon style="color: var(--bs-gray-600)" slot="icon-only">refresh</mat-icon>
+      </ion-button>
       <ion-button (click)="cerrarSesion()">
         <mat-icon style="color: var(--bs-gray-600)" slot="icon-only">logout</mat-icon>
       </ion-button>
@@ -18,7 +21,7 @@
         </span>
         <input
           class="form-control border-l-0!"
-          placeholder="{{ 'RUTAS.SEARCH_PLACEHOLDER' | translate }}"
+          placeholder="{{ 'CLIENTES.SEARCH_PLACEHOLDER' | translate }}"
           [formControl]="formBusquedaClientes" />
       </div>
     </div>
