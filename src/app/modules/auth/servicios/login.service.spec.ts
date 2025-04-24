@@ -81,7 +81,7 @@ describe('LoginService', () => {
         id: '253e3e87-1981-4197-a140-eddb470b00af',
         username: 'Esteban.Bins',
         email: 'Nola_Wiza72@gmail.com',
-        role: 'STAFF',
+        role: 'SELLER', // Cambiado de 'STAFF' a 'SELLER'
       },
     };
 
