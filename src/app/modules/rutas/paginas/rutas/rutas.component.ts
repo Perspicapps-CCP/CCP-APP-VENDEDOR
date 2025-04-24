@@ -54,7 +54,7 @@ export class RutasComponent implements OnInit {
   }
 
   obtenerRutas() {
-    this.rutasService.obtenerRuta('123').subscribe(rutas => {
+    this.rutasService.obtenerRuta().subscribe(rutas => {
       this.rutas = rutas;
       this.filterRutas();
     });
