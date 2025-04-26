@@ -10,30 +10,30 @@
  */
 
 /* Core CSS required for Ionic components to work properly */
-@use "@ionic/angular/css/core.css";
+@use '@ionic/angular/css/core.css';
 
 /* Basic CSS for apps built with Ionic */
-@use "@ionic/angular/css/normalize.css";
-@use "@ionic/angular/css/structure.css";
-@use "@ionic/angular/css/typography.css";
-@use "@ionic/angular/css/display.css";
+@use '@ionic/angular/css/normalize.css';
+@use '@ionic/angular/css/structure.css';
+@use '@ionic/angular/css/typography.css';
+@use '@ionic/angular/css/display.css';
 
 /* Optional CSS utils that can be commented out */
-@use "@ionic/angular/css/padding.css";
-@use "@ionic/angular/css/float-elements.css";
-@use "@ionic/angular/css/text-alignment.css";
-@use "@ionic/angular/css/text-transformation.css";
-@use "@ionic/angular/css/flex-utils.css";
+@use '@ionic/angular/css/padding.css';
+@use '@ionic/angular/css/float-elements.css';
+@use '@ionic/angular/css/text-alignment.css';
+@use '@ionic/angular/css/text-transformation.css';
+@use '@ionic/angular/css/flex-utils.css';
 
-@use "@angular/material" as mat;
+@use '@angular/material' as mat;
 
-@use "scss/custom-bootstrap";
+@use 'scss/custom-bootstrap';
 
-@use "scss/font-conf";
+@use 'scss/font-conf';
 
-@use "bootstrap-icons/font/bootstrap-icons.css";
+@use 'bootstrap-icons/font/bootstrap-icons.css';
 
-@use "tailwindcss" as *;
+@use 'tailwindcss' as *;
 
 html {
   @include mat.theme(
@@ -41,10 +41,10 @@ html {
       color: (
         theme-type: light,
         primary: mat.$azure-palette,
-        tertiary: mat.$blue-palette
+        tertiary: mat.$blue-palette,
       ),
       typography: Lato,
-      density: 0
+      density: 0,
     )
   );
 }
@@ -63,16 +63,16 @@ strong.highlight {
 }
 
 .standard-icon {
-  font-family: "Material Icons", sans-serif;
+  font-family: 'Material Icons', sans-serif;
 }
 
 .rounded-icon {
-  font-family: "Material Icons Round", sans-serif;
+  font-family: 'Material Icons Round', sans-serif;
   font-variation-settings:
-    "FILL" 0,
-    "wght" 400,
-    "GRAD" 0,
-    "opsz" 40;
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 40;
 }
 
 /** custom maps styles */
@@ -81,7 +81,7 @@ strong.highlight {
 
 .custom-info-window {
   padding: 12px;
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   border-radius: 8px;
 }
 

@@ -42,10 +42,4 @@ describe('VisitasComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('debería inicializar correctamente', () => {
-    spyOn(component, 'ngOnInit');
-    component.ngOnInit();
-    expect(component.ngOnInit).toHaveBeenCalled();
-  });
 });

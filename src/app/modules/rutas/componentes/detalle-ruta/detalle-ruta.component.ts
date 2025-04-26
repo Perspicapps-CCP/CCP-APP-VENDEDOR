@@ -145,13 +145,6 @@ export class DetalleRutaComponent implements OnInit {
 
     // Definir las rutas a los SVG en los assets (una para cada color)
     const baseSvgPath = 'assets/markers/marcador-client.svg';
-    const startSvgPath = 'assets/markers/marcador-warehouse.svg';
-
-    // Función para obtener la ruta del SVG según la posición del marcador
-    const getSvgPath = (isFirst: boolean, isLast: boolean) => {
-      if (isFirst) return startSvgPath;
-      return baseSvgPath;
-    };
 
     // Crear nuevos marcadores
     rutasToUse.forEach((ruta, index) => {
@@ -164,14 +157,8 @@ export class DetalleRutaComponent implements OnInit {
         return;
       }
 
-      const isFirst = index === 0;
-      const isLast = index === rutasToUse.length - 1;
-
-      // Determinar el color basado en la posición del marcador
-      const markerColor = isFirst ? '#4CAF50' : isLast ? '#FF5722' : '#4285F4';
-
       // Obtener la ruta del SVG apropiada según la posición
-      const svgPath = getSvgPath(isFirst, isLast);
+      const svgPath = baseSvgPath;
 
       // Crear marcador usando el nuevo método recomendado
       const marker = new this.markerLibrary.Marker({

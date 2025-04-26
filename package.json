@@ -16,6 +16,7 @@
     "android-live": "ionic capacitor run android -l --external",
     "android-sync": "ionic capacitor sync android",
     "lint": "ng lint",
+    "lint:check": "ng lint",
     "format": "prettier --write \"src/**/*.{ts,html,scss,json}\"",
     "format:check": "prettier --check \"src/**/*.{ts,html,scss,json}\"",
     "lint:fix": "ng lint --fix"
