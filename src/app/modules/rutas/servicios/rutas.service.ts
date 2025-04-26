@@ -1,16 +1,16 @@
-import { Injectable } from '@angular/core';
-import { Ruta } from '../interfaces/ruta.interface';
-import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
 import { LocalDatePipe } from 'src/app/shared/pipes/local-date.pipe';
 import { LocalizationService } from 'src/app/shared/services/localization.service';
+import { environment } from 'src/environments/environment';
+import { Ruta, RutaResponse } from '../interfaces/ruta.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RutasService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiUrlCCP;
   private localDatePipe: LocalDatePipe;
 
   constructor(
@@ -20,30 +20,25 @@ export class RutasService {
     this.localDatePipe = new LocalDatePipe(this.localizationService);
   }
 
-  obtenerRuta(seller_id: string): Observable<Ruta[]> {
-    return this.http.get<Ruta[]>(`${this.apiUrl}/logistic/seller/route/${seller_id}`).pipe(
-      map<any, any>((res: any) => {
-        res.route.forEach((route: any) => {
-          route.date = this.localDatePipe.transform(route.date, undefined, true);
-        });
-        return res;
-      }),
-      map((rutas: any) => {
-        return rutas.route;
-      }),
-      catchError(error => {
-        console.error(
-          'ERROR_RUTAS: Error detallado:',
-          JSON.stringify({
-            error: error,
-            status: error.status,
-            message: error.message,
-            details: error.error,
-          }),
-        );
+  obtenerRuta(): Observable<Ruta[]> {
+    const date = this.localDatePipe.transform(new Date(), 'yyyy-MM-dd', true) || '';
+    return this.http.get<RutaResponse>(`${this.apiUrl}/api/v1/sales/routes/${date}`).pipe(
+      map<RutaResponse, Ruta[]>((res: RutaResponse) => {
+        const rutas: Ruta[] = [];
 
-        console.error('ERROR_RUTAS:', JSON.stringify(error));
-        return throwError(() => error);
+        res.stops.forEach(stop => {
+          const ruta: Ruta = {
+            id: stop.id,
+            customer_address: stop.address.line,
+            customer_name: stop.client.full_name,
+            customer_phone_number: stop.client.phone,
+            latitude: stop.address.latitude.toString(),
+            longitude: stop.address.longitude.toString(),
+            date: this.localDatePipe.transform(res.date, undefined, true) || '',
+          };
+          rutas.push(ruta);
+        });
+        return rutas;
       }),
     );
   }

@@ -10,15 +10,27 @@ export class HighlightTextPipe implements PipeTransform {
   constructor(private sanitizer: DomSanitizer) {}
 
   transform(value: any, search = ''): SafeHtml {
-    const valueStr = value ? value + '' : '';
-    if (!search) {
+    const valueStr = value ? String(value) : '';
+    if (!search || search.trim() === '') {
       return valueStr;
     }
-    const expresion = new RegExp(
-      '(?![^&;]+;)(?!<[^<>]*)(' + search + ')(?![^<>]*>)(?![^&;]+;)',
-      'gi',
-    );
-    const respuesta = '<strong style="color:black" class="highlight">$1</strong>';
-    return this.sanitizer.bypassSecurityTrustHtml(valueStr.replace(expresion, respuesta));
+
+    try {
+      // Escapar caracteres especiales de regex
+      const escapedSearch = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+
+      // Crear la expresión regular con el término escapado
+      const expresion = new RegExp(
+        '(?![^&;]+;)(?!<[^<>]*)(' + escapedSearch + ')(?![^<>]*>)(?![^&;]+;)',
+        'gi',
+      );
+
+      const respuesta = '<strong style="color:black" class="highlight">$1</strong>';
+      return this.sanitizer.bypassSecurityTrustHtml(valueStr.replace(expresion, respuesta));
+    } catch (error) {
+      // En caso de error, simplemente devolver el valor original
+      console.warn('Error en HighlightTextPipe:', error);
+      return valueStr;
+    }
   }
 }

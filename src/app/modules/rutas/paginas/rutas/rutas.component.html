@@ -2,12 +2,12 @@
   <ion-toolbar class="px-[1.25rem]">
     <ion-title> {{ 'RUTAS.TITLE' | translate }}</ion-title>
     <ion-buttons slot="secondary">
-      <ion-button id="open-modal">
-        <mat-icon style="color: var(--bs-gray-600)" slot="icon-only">map</mat-icon>
-      </ion-button>
-
       <ion-button (click)="obtenerRutas()">
         <mat-icon style="color: var(--bs-gray-600)" slot="icon-only">refresh</mat-icon>
+      </ion-button>
+
+      <ion-button id="open-modal">
+        <mat-icon style="color: var(--bs-gray-600)" slot="icon-only">map</mat-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

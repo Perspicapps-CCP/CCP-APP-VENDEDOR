@@ -9,8 +9,6 @@ import { sharedImports } from 'src/app/shared/otros/shared-imports';
   standalone: true,
   imports: [sharedImports, IonContent, IonHeader, IonTitle, IonToolbar],
 })
-export class VisitasComponent implements OnInit {
+export class VisitasComponent {
   constructor() {}
-
-  ngOnInit() {}
 }
