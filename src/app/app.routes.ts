@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { LayoutComponent } from './modules/layout/paginas/layout/layout.component';
+import { validateTokenGuard } from './shared/guards/validate-token.guard';
 
 export const routes: Routes = [
   {
@@ -9,8 +10,8 @@ export const routes: Routes = [
   {
     path: 'home',
     component: LayoutComponent,
-    // canActivate: [validateTokenGuard],
-    // canActivateChild: [validateTokenGuard],
+    canActivate: [validateTokenGuard],
+    canActivateChild: [validateTokenGuard],
     children: [
       {
         path: 'clientes',
