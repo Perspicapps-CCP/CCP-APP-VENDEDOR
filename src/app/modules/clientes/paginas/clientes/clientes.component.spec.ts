@@ -64,7 +64,7 @@ class MockClientesService {
         customer_id: '001',
         customer_name: 'Juan Pérez',
         identification: '123456789',
-        address: 'Calle Principal 123',
+        addressString: 'Calle Principal 123',
         phone: '3001234567',
         customer_image: 'https://example.com/image1.jpg',
         isRecentVisit: true,
@@ -73,7 +73,7 @@ class MockClientesService {
         customer_id: '002',
         customer_name: 'María López',
         identification: '987654321',
-        address: 'Avenida Central 456',
+        addressString: 'Avenida Central 456',
         phone: '3007654321',
         customer_image: 'https://example.com/image2.jpg',
         isRecentVisit: false,
@@ -102,7 +102,7 @@ describe('ClientesComponent', () => {
       customer_id: '001',
       customer_name: 'Juan Pérez',
       identification: '123456789',
-      address: 'Calle Principal 123',
+      addressString: 'Calle Principal 123',
       phone: '3001234567',
       customer_image: 'https://example.com/image1.jpg',
       isRecentVisit: true,
@@ -111,7 +111,7 @@ describe('ClientesComponent', () => {
       customer_id: '002',
       customer_name: 'María López',
       identification: '987654321',
-      address: 'Avenida Central 456',
+      addressString: 'Avenida Central 456',
       phone: '3007654321',
       customer_image: 'https://example.com/image2.jpg',
       isRecentVisit: false,
@@ -166,7 +166,7 @@ describe('ClientesComponent', () => {
     component.ngOnInit();
 
     // Verificamos que se llamó al método obtenerClientes del servicio
-    expect(clientesService.obtenerClientes).toHaveBeenCalledWith('123');
+    expect(clientesService.obtenerClientes).toHaveBeenCalledWith();
 
     // Verificamos que los clientes se hayan cargado en el componente
     expect(component.clientes.length).toBe(2);
@@ -247,7 +247,7 @@ describe('ClientesComponent', () => {
     // Esto simula un comportamiento típico de manejo de errores en componentes
     const originalMethod = component.obtenerClientes;
     component.obtenerClientes = function () {
-      clientesService.obtenerClientes('123').subscribe({
+      clientesService.obtenerClientes().subscribe({
         next: data => {
           this.clientes = data;
           this.filterClientes();

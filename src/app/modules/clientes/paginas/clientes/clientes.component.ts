@@ -51,7 +51,7 @@ export class ClientesComponent implements OnInit {
   }
 
   obtenerClientes() {
-    this.clientesService.obtenerClientes('123').subscribe(clientes => {
+    this.clientesService.obtenerClientes().subscribe(clientes => {
       this.clientes = clientes;
       this.filterClientes();
     });
