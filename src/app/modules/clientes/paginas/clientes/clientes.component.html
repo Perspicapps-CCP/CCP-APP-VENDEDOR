@@ -39,7 +39,7 @@
               <img [src]="cliente.customer_image" [alt]="'image ' + cliente.customer_name" />
             </div>
             <div class="content-customer">
-              @if (cliente.isRecentVisit) {
+              @if (!cliente.isRecentVisit) {
                 <div>
                   <div class="bage-recent-visit">
                     <span>{{ 'CLIENTES.CLIENT_NOT_RECENT_VISIT' | translate }}</span>
