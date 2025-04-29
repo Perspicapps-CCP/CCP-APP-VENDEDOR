@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
+import { ViewWillEnter } from '@ionic/angular';
 import {
   IonButton,
   IonButtons,
@@ -12,11 +13,10 @@ import {
 import { map, Observable, startWith } from 'rxjs';
 import { sharedImports } from 'src/app/shared/otros/shared-imports';
 import { HighlightTextPipe } from 'src/app/shared/pipes/highlight-text.pipe';
-import { Cliente } from '../../interfaces/cliente.interface';
 import { DinamicSearchService } from 'src/app/shared/services/dinamic-search.service';
-import { ClientesService } from '../../servicios/clientes.service';
 import { LoginService } from '../../../auth/servicios/login.service';
-
+import { Cliente } from '../../interfaces/cliente.interface';
+import { ClientesService } from '../../servicios/clientes.service';
 @Component({
   selector: 'app-clientes',
   templateUrl: './clientes.component.html',
@@ -35,7 +35,7 @@ import { LoginService } from '../../../auth/servicios/login.service';
     HighlightTextPipe,
   ],
 })
-export class ClientesComponent implements OnInit {
+export class ClientesComponent implements ViewWillEnter {
   formBusquedaClientes = new FormControl('');
   clientes: Cliente[] = [];
   filterClientes$?: Observable<Cliente[]>;
@@ -45,10 +45,6 @@ export class ClientesComponent implements OnInit {
     private dinamicSearchService: DinamicSearchService,
     private loginService: LoginService,
   ) {}
-
-  ngOnInit() {
-    this.obtenerClientes();
-  }
 
   obtenerClientes() {
     this.clientesService.obtenerClientes().subscribe(clientes => {
@@ -73,5 +69,9 @@ export class ClientesComponent implements OnInit {
 
   cerrarSesion() {
     this.loginService.cerrarSesion();
+  }
+
+  ionViewWillEnter(): void {
+    this.obtenerClientes();
   }
 }

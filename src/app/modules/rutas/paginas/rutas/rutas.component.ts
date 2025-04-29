@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import {
@@ -9,14 +9,15 @@ import {
   IonModal,
   IonTitle,
   IonToolbar,
+  ViewWillEnter,
 } from '@ionic/angular/standalone';
 import { map, Observable, startWith } from 'rxjs';
 import { sharedImports } from 'src/app/shared/otros/shared-imports';
 import { HighlightTextPipe } from 'src/app/shared/pipes/highlight-text.pipe';
+import { DinamicSearchService } from 'src/app/shared/services/dinamic-search.service';
 import { DetalleRutaComponent } from '../../componentes/detalle-ruta/detalle-ruta.component';
 import { Ruta } from '../../interfaces/ruta.interface';
 import { RutasService } from '../../servicios/rutas.service';
-import { DinamicSearchService } from 'src/app/shared/services/dinamic-search.service';
 
 @Component({
   selector: 'app-rutas',
@@ -37,7 +38,7 @@ import { DinamicSearchService } from 'src/app/shared/services/dinamic-search.ser
     HighlightTextPipe,
   ],
 })
-export class RutasComponent implements OnInit {
+export class RutasComponent implements ViewWillEnter {
   @ViewChild(IonModal) modal!: IonModal;
 
   formBusquedaRutas = new FormControl('');
@@ -48,10 +49,6 @@ export class RutasComponent implements OnInit {
     private rutasService: RutasService,
     private dinamicSearchService: DinamicSearchService,
   ) {}
-
-  ngOnInit() {
-    this.obtenerRutas();
-  }
 
   obtenerRutas() {
     this.rutasService.obtenerRuta().subscribe(rutas => {
@@ -79,4 +76,8 @@ export class RutasComponent implements OnInit {
   }
 
   onWillDismiss(event: any) {}
+
+  ionViewWillEnter(): void {
+    this.obtenerRutas();
+  }
 }
