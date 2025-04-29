@@ -9,7 +9,7 @@ import { Cliente } from '../../interfaces/cliente.interface';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { HighlightTextPipe } from 'src/app/shared/pipes/highlight-text.pipe';
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, Component } from '@angular/core';
 import {
   TranslateLoader,
   TranslateModule,
@@ -158,12 +158,12 @@ describe('ClientesComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load clients on init', () => {
+  it('should load clients on ionViewWillEnter', () => {
     // Espiamos obtenerClientes antes de verificar
     spyOn(clientesService, 'obtenerClientes').and.callThrough();
 
-    // Necesitamos llamar a ngOnInit nuevamente después de configurar el espía
-    component.ngOnInit();
+    // Necesitamos llamar a ionViewWillEnter nuevamente después de configurar el espía
+    component.ionViewWillEnter();
 
     // Verificamos que se llamó al método obtenerClientes del servicio
     expect(clientesService.obtenerClientes).toHaveBeenCalledWith();
@@ -175,6 +175,7 @@ describe('ClientesComponent', () => {
   });
 
   it('should initialize filterClientes$ observable on init', () => {
+    component.obtenerClientes(); // Aseguramos que los clientes estén cargados
     // Verificamos que el observable filterClientes$ se haya inicializado
     expect(component.filterClientes$).toBeDefined();
   });
@@ -198,6 +199,7 @@ describe('ClientesComponent', () => {
   });
 
   it('should properly search clients with buscar method', () => {
+    component.obtenerClientes(); // Aseguramos que los clientes estén cargados
     // Espiar el servicio dynamicSearch
     spyOn(dinamicSearchService, 'dynamicSearch').and.callThrough();
 
