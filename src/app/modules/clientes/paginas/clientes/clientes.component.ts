@@ -17,6 +17,7 @@ import { DinamicSearchService } from 'src/app/shared/services/dinamic-search.ser
 import { LoginService } from '../../../auth/servicios/login.service';
 import { Cliente } from '../../interfaces/cliente.interface';
 import { ClientesService } from '../../servicios/clientes.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-clientes',
   templateUrl: './clientes.component.html',
@@ -44,6 +45,7 @@ export class ClientesComponent implements ViewWillEnter {
     private clientesService: ClientesService,
     private dinamicSearchService: DinamicSearchService,
     private loginService: LoginService,
+    private router: Router,
   ) {}
 
   obtenerClientes() {
@@ -73,5 +75,10 @@ export class ClientesComponent implements ViewWillEnter {
 
   ionViewWillEnter(): void {
     this.obtenerClientes();
+  }
+
+  navegarADetalleCliente(cliente: Cliente) {
+    this.clientesService.ClienteSeleccionado = cliente;
+    this.router.navigate(['/detalle-cliente', cliente.customer_id]);
   }
 }

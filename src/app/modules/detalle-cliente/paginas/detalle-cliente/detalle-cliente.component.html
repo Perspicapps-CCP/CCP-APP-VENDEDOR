@@ -1,0 +1,33 @@
+<div class="flex flex-col h-full w-full">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button id="open-modal" (click)="back()">
+          <mat-icon style="color: var(--bs-gray-600)" slot="icon-only">arrow_back</mat-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>{{ clienteSeleccionado?.customer_name }}</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="catalogoArticulos()">
+          <mat-icon
+            class="material-symbols-rounded"
+            style="color: var(--bs-gray-600)"
+            slot="icon-only"
+            >storefront</mat-icon
+          >
+        </ion-button>
+        <ion-button (click)="carritoCompras()">
+          <mat-icon
+            class="material-symbols-rounded"
+            style="color: var(--bs-gray-600)"
+            slot="icon-only"
+            >shopping_cart</mat-icon
+          >
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="ion-no-padding">
+    <div class="map-container">detalle cliente</div>
+  </ion-content>
+</div>

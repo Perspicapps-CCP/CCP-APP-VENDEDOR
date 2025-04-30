@@ -10,6 +10,8 @@ import { Cliente, ClienteResponse } from '../interfaces/cliente.interface';
 export class ClientesService {
   private apiUrl = environment.apiUrlCCP;
 
+  private clienteSeleccionado: Cliente | null = null;
+
   constructor(private http: HttpClient) {}
 
   obtenerClientes(): Observable<Cliente[]> {
@@ -31,5 +33,13 @@ export class ClientesService {
         return clientInfo;
       }),
     );
+  }
+
+  set ClienteSeleccionado(cliente: Cliente) {
+    this.clienteSeleccionado = cliente;
+  }
+
+  get ClienteSeleccionado(): Cliente | null {
+    return this.clienteSeleccionado;
   }
 }
