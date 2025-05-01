@@ -15,22 +15,16 @@ export class HighlightTextPipe implements PipeTransform {
       return valueStr;
     }
 
-    try {
-      // Escapar caracteres especiales de regex
-      const escapedSearch = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    // Escapar caracteres especiales de regex
+    const escapedSearch = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 
-      // Crear la expresión regular con el término escapado
-      const expresion = new RegExp(
-        '(?![^&;]+;)(?!<[^<>]*)(' + escapedSearch + ')(?![^<>]*>)(?![^&;]+;)',
-        'gi',
-      );
+    // Crear la expresión regular con el término escapado
+    const expresion = new RegExp(
+      '(?![^&;]+;)(?!<[^<>]*)(' + escapedSearch + ')(?![^<>]*>)(?![^&;]+;)',
+      'gi',
+    );
 
-      const respuesta = '<strong style="color:black" class="highlight">$1</strong>';
-      return this.sanitizer.bypassSecurityTrustHtml(valueStr.replace(expresion, respuesta));
-    } catch (error) {
-      // En caso de error, simplemente devolver el valor original
-      console.warn('Error en HighlightTextPipe:', error);
-      return valueStr;
-    }
+    const respuesta = '<strong style="color:black" class="highlight">$1</strong>';
+    return this.sanitizer.bypassSecurityTrustHtml(valueStr.replace(expresion, respuesta));
   }
 }

@@ -36,9 +36,11 @@ export const DETALLE_CLIENTE_ROUTES: Routes = [
   //   loadComponent: () =>
   //     import('./paginas/videos/detalle-video.component').then(c => c.DetalleVideoComponent),
   // },
-  // {
-  //   path: ':idCliente/carritoCompras',
-  //   loadComponent: () =>
-  //     import('./paginas/carrito/carrito-compras.component').then(c => c.CarritoComprasComponent),
-  // },
+  {
+    path: ':idCliente/carritoCompras',
+    loadComponent: () =>
+      import('./paginas/carrito-compras/carrito-compras.component').then(
+        c => c.CarritoComprasComponent,
+      ),
+  },
 ];

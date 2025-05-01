@@ -45,7 +45,6 @@ export class DetalleClienteComponent implements OnInit {
   obtenerInfoCliente() {
     if (this.clientesService.clienteSeleccionado) {
       this.clienteSeleccionado = this.clientesService.clienteSeleccionado;
-      console.log('Cliente seleccionado', this.clienteSeleccionado);
     } else {
       this.router.navigate(['/home']);
     }
@@ -56,12 +55,16 @@ export class DetalleClienteComponent implements OnInit {
   }
 
   catalogoArticulos() {
-    console.log('Catalogo articulos', this.clienteSeleccionado!.customer_name);
     this.router.navigate([
       `/detalle-cliente/${this.clienteSeleccionado!.customer_id}/catalogoProductos`,
     ]);
   }
-  carritoCompras() {}
+
+  irCarritoCompras() {
+    this.router.navigate([
+      `/detalle-cliente/${this.clienteSeleccionado!.customer_id}/carritoCompras`,
+    ]);
+  }
 
   navegarAVideoDetalle() {}
 }

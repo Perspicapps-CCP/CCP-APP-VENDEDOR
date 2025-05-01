@@ -138,4 +138,46 @@ describe('ClientesService', () => {
     expect(req.request.method).toBe('GET');
     req.flush('Not found', mockError);
   });
+
+  it('should set clienteSeleccionado correctly', () => {
+    const mockCliente: Cliente = {
+      customer_id: '1',
+      customer_name: 'Cliente Prueba 1',
+      identification: 'ID12345',
+      addressString: 'Calle Prueba 123',
+      phone: '555-1234',
+      customer_image: 'url/imagen1.jpg',
+      isRecentVisit: true,
+    };
+
+    // Inicialmente debería ser null
+    expect(service.clienteSeleccionado).toBeNull();
+
+    // Establecer el cliente
+    service.clienteSeleccionado = mockCliente;
+
+    // Verificar que se haya establecido correctamente
+    expect(service.clienteSeleccionado).toEqual(mockCliente);
+  });
+
+  it('should get clienteSeleccionado correctly', () => {
+    const mockCliente: Cliente = {
+      customer_id: '2',
+      customer_name: 'Cliente Prueba 2',
+      identification: 'ID67890',
+      addressString: 'Avenida Test 456',
+      phone: '555-6789',
+      customer_image: 'url/imagen2.jpg',
+      isRecentVisit: false,
+    };
+
+    // Establecer el cliente
+    service.clienteSeleccionado = mockCliente;
+
+    // Obtener el cliente y verificar que sea el mismo
+    const clienteObtenido = service.clienteSeleccionado;
+    expect(clienteObtenido).toBe(mockCliente);
+    expect(clienteObtenido?.customer_id).toBe('2');
+    expect(clienteObtenido?.customer_name).toBe('Cliente Prueba 2');
+  });
 });

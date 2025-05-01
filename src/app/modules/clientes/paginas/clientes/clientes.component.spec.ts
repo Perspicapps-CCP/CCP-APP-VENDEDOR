@@ -9,7 +9,8 @@ import { Cliente } from '../../interfaces/cliente.interface';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { HighlightTextPipe } from 'src/app/shared/pipes/highlight-text.pipe';
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, Component } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   TranslateLoader,
   TranslateModule,
@@ -56,32 +57,6 @@ class MockDinamicSearchService {
   }
 }
 
-// Mock para ClientesService
-class MockClientesService {
-  obtenerClientes(id: string) {
-    return of<Cliente[]>([
-      {
-        customer_id: '001',
-        customer_name: 'Juan Pérez',
-        identification: '123456789',
-        addressString: 'Calle Principal 123',
-        phone: '3001234567',
-        customer_image: 'https://example.com/image1.jpg',
-        isRecentVisit: true,
-      },
-      {
-        customer_id: '002',
-        customer_name: 'María López',
-        identification: '987654321',
-        addressString: 'Avenida Central 456',
-        phone: '3007654321',
-        customer_image: 'https://example.com/image2.jpg',
-        isRecentVisit: false,
-      },
-    ]);
-  }
-}
-
 // Mock para LoginService
 class MockLoginService {
   cerrarSesion() {
@@ -92,9 +67,10 @@ class MockLoginService {
 describe('ClientesComponent', () => {
   let component: ClientesComponent;
   let fixture: ComponentFixture<ClientesComponent>;
-  let clientesService: ClientesService;
+  let clientesService: jasmine.SpyObj<ClientesService>;
   let dinamicSearchService: DinamicSearchService;
   let loginService: LoginService;
+  let router: jasmine.SpyObj<Router>;
 
   // Mock de datos de clientes
   const mockClientes: Cliente[] = [
@@ -119,6 +95,15 @@ describe('ClientesComponent', () => {
   ];
 
   beforeEach(async () => {
+    // Crear spy objects para los servicios
+    const clientesServiceSpy = jasmine.createSpyObj('ClientesService', ['obtenerClientes'], {
+      // Propiedades
+      clienteSeleccionado: undefined,
+    });
+    clientesServiceSpy.obtenerClientes.and.returnValue(of(mockClientes));
+
+    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+
     await TestBed.configureTestingModule({
       imports: [
         IonicModule.forRoot(),
@@ -130,10 +115,11 @@ describe('ClientesComponent', () => {
         }),
       ],
       providers: [
-        { provide: ClientesService, useClass: MockClientesService },
+        { provide: ClientesService, useValue: clientesServiceSpy },
         { provide: DinamicSearchService, useClass: MockDinamicSearchService },
         { provide: LoginService, useClass: MockLoginService },
         { provide: TranslateService, useClass: MockTranslateService },
+        { provide: Router, useValue: routerSpy },
         TranslateStore,
         HighlightTextPipe,
       ],
@@ -142,14 +128,13 @@ describe('ClientesComponent', () => {
 
     fixture = TestBed.createComponent(ClientesComponent);
     component = fixture.componentInstance;
-    clientesService = TestBed.inject(ClientesService);
+    clientesService = TestBed.inject(ClientesService) as jasmine.SpyObj<ClientesService>;
     dinamicSearchService = TestBed.inject(DinamicSearchService);
     loginService = TestBed.inject(LoginService);
+    router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
 
     // Espiar métodos para verificar llamadas - solo una vez en el beforeEach
     spyOn(loginService, 'cerrarSesion').and.callThrough();
-
-    // Nota: No espiamos obtenerClientes ni dynamicSearch aquí, lo haremos en cada test según necesidades
 
     fixture.detectChanges();
   });
@@ -159,14 +144,11 @@ describe('ClientesComponent', () => {
   });
 
   it('should load clients on ionViewWillEnter', () => {
-    // Espiamos obtenerClientes antes de verificar
-    spyOn(clientesService, 'obtenerClientes').and.callThrough();
-
-    // Necesitamos llamar a ionViewWillEnter nuevamente después de configurar el espía
+    // Necesitamos llamar a ionViewWillEnter
     component.ionViewWillEnter();
 
     // Verificamos que se llamó al método obtenerClientes del servicio
-    expect(clientesService.obtenerClientes).toHaveBeenCalledWith();
+    expect(clientesService.obtenerClientes).toHaveBeenCalled();
 
     // Verificamos que los clientes se hayan cargado en el componente
     expect(component.clientes.length).toBe(2);
@@ -181,6 +163,9 @@ describe('ClientesComponent', () => {
   });
 
   it('should return all clients when search term is empty', () => {
+    // Aseguramos que los clientes estén cargados y el observable inicializado
+    component.obtenerClientes();
+
     // Cambiamos el valor del FormControl a vacío
     component.formBusquedaClientes.setValue('');
 
@@ -238,9 +223,7 @@ describe('ClientesComponent', () => {
   it('should handle error in obtenerClientes', done => {
     // Creamos un espía que lanza un error
     const errorMsg = 'Error al obtener clientes';
-    spyOn(clientesService, 'obtenerClientes').and.returnValue(
-      throwError(() => new Error(errorMsg)),
-    );
+    clientesService.obtenerClientes.and.returnValue(throwError(() => new Error(errorMsg)));
 
     // Espiamos console.error para verificar que se maneja el error
     spyOn(console, 'error');
@@ -275,5 +258,19 @@ describe('ClientesComponent', () => {
     setTimeout(() => {
       component.obtenerClientes = originalMethod;
     });
+  });
+
+  it('should set selected client and navigate to client detail when navegarADetalleCliente is called', () => {
+    // Preparamos los mocks necesarios
+    const mockCliente = mockClientes[0]; // Usamos el primer cliente de la lista
+
+    // Llamamos al método que queremos probar
+    component.navegarADetalleCliente(mockCliente);
+
+    // Verificamos que se estableció el cliente seleccionado en el servicio
+    expect(clientesService.clienteSeleccionado).toEqual(mockCliente);
+
+    // Verificamos que se navegó a la ruta correcta
+    expect(router.navigate).toHaveBeenCalledWith(['/detalle-cliente', mockCliente.customer_id]);
   });
 });
