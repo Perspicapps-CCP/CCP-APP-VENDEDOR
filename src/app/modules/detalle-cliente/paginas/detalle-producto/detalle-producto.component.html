@@ -16,7 +16,7 @@
             >shopping_cart</mat-icon
           >
         </ion-button>
-        <div class="badge">10</div>
+        <div class="badge">{{ carritoCount | async }}</div>
       </ion-buttons>
     </ion-toolbar>
   </ion-header>
@@ -49,10 +49,12 @@
         <div>
           <div class="input-group">
             <input
-              type="text"
+              type="number"
+              appNumbersOnly
               class="form-control"
               [placeholder]="'DETALLE_PRODUCTO.FORM.QUANTITY' | translate"
-              aria-describedby="cantidad-producto" />
+              aria-describedby="cantidad-producto"
+              [(ngModel)]="productoSeleccionado.quantity_selected" />
             <span class="input-group-text"
               >{{ productoSeleccionado.quantity < 100 ? productoSeleccionado.quantity : '+99' }}
               {{ 'DETALLE_PRODUCTO.AVALIABLE' | translate }}</span
@@ -60,7 +62,15 @@
           </div>
         </div>
         <div class="w-full">
-          <button type="button" class="btn btn-primary w-full">
+          <button
+            type="button"
+            class="btn btn-primary w-full"
+            (click)="agregarAlCarrito()"
+            [disabled]="
+              !productoSeleccionado.quantity_selected ||
+              productoSeleccionado.quantity_selected <= 0 ||
+              productoSeleccionado.quantity_selected > productoSeleccionado.quantity
+            ">
             {{ 'DETALLE_PRODUCTO.BUTTON.ADD_TO_CART' | translate }}
           </button>
         </div>

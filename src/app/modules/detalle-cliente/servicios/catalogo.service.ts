@@ -29,6 +29,7 @@ export class CatalogoService {
           return {
             ...producto,
             price_currency: precio || '0',
+            quantity_selected: 0,
           };
         });
       }),

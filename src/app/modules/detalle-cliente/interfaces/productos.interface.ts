@@ -7,4 +7,5 @@ export interface Producto {
   price_currency: string;
   images: string[];
   quantity: number;
+  quantity_selected: number;
 }

@@ -20,6 +20,8 @@ import { HighlightTextPipe } from 'src/app/shared/pipes/highlight-text.pipe';
 import { DinamicSearchService } from 'src/app/shared/services/dinamic-search.service';
 import { Producto } from '../../interfaces/productos.interface';
 import { CatalogoService } from '../../servicios/catalogo.service';
+import { CarritoComprasService } from '../../servicios/carrito-compras.service';
+import { OnlyNumbersDirective } from 'src/app/shared/directivas/only-numbers.directive';
 
 @Component({
   selector: 'app-catalogo-productos',
@@ -37,6 +39,7 @@ import { CatalogoService } from '../../servicios/catalogo.service';
     MatCard,
     ReactiveFormsModule,
     HighlightTextPipe,
+    OnlyNumbersDirective,
   ],
 })
 export class CatalogoProductosComponent implements ViewWillEnter {
@@ -47,11 +50,14 @@ export class CatalogoProductosComponent implements ViewWillEnter {
   formBusquedaProductos = new FormControl('');
   filterProductos$?: Observable<Producto[]>;
 
+  carritoCount?: Observable<string>;
+
   constructor(
     private catalogoService: CatalogoService,
     private clientesService: ClientesService,
     private router: Router,
     private dinamicSearchService: DinamicSearchService,
+    private carritoComprasService: CarritoComprasService,
   ) {}
 
   ionViewWillEnter() {
@@ -86,15 +92,18 @@ export class CatalogoProductosComponent implements ViewWillEnter {
   obtenerInfoCliente() {
     if (this.clientesService.clienteSeleccionado) {
       this.clienteSeleccionado = this.clientesService.clienteSeleccionado;
+      this.carritoCount = this.carritoComprasService.getCartItemCount();
     } else {
       this.router.navigate(['/home']);
     }
   }
 
-  irCarritoCompras() {}
-
+  irCarritoCompras() {
+    this.router.navigate([
+      `/detalle-cliente/${this.clienteSeleccionado!.customer_id}/carritoCompras`,
+    ]);
+  }
   irDetalleProducto(producto: Producto) {
-    console.log('seleccione el producto', producto);
     this.catalogoService.productoSeleccionado = producto;
 
     this.router.navigate([
@@ -107,5 +116,10 @@ export class CatalogoProductosComponent implements ViewWillEnter {
 
   back() {
     window.history.back();
+  }
+
+  agregarAlCarrito(producto: Producto) {
+    this.carritoComprasService.addToCurrentCart(producto);
+    producto.quantity_selected = 0;
   }
 }

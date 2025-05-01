@@ -16,6 +16,9 @@ import { Producto } from '../../interfaces/productos.interface';
 import { Cliente } from 'src/app/modules/clientes/interfaces/cliente.interface';
 import { Router } from '@angular/router';
 import { VisorImagenesDialogComponent } from 'src/app/shared/componentes/visor-imagenes-dialog/visor-imagenes-dialog.component';
+import { map, Observable } from 'rxjs';
+import { CarritoComprasService } from '../../servicios/carrito-compras.service';
+import { OnlyNumbersDirective } from 'src/app/shared/directivas/only-numbers.directive';
 
 @Component({
   selector: 'app-detalle-producto',
@@ -31,16 +34,19 @@ import { VisorImagenesDialogComponent } from 'src/app/shared/componentes/visor-i
     CommonModule,
     ReactiveFormsModule,
     VisorImagenesDialogComponent,
+    OnlyNumbersDirective,
   ],
 })
 export class DetalleProductoComponent implements ViewWillEnter {
   productoSeleccionado?: Producto;
   clienteSeleccionado?: Cliente;
+  carritoCount?: Observable<string>;
 
   constructor(
     private router: Router,
     private clientesService: ClientesService,
     private catalogoService: CatalogoService,
+    private carritoComprasService: CarritoComprasService,
   ) {}
 
   ionViewWillEnter() {
@@ -51,6 +57,7 @@ export class DetalleProductoComponent implements ViewWillEnter {
   obtenerInfoCliente() {
     if (this.clientesService.clienteSeleccionado) {
       this.clienteSeleccionado = this.clientesService.clienteSeleccionado;
+      this.carritoCount = this.carritoComprasService.getCartItemCount();
     } else {
       this.router.navigate(['/home']);
     }
@@ -64,9 +71,20 @@ export class DetalleProductoComponent implements ViewWillEnter {
     }
   }
 
-  irCarritoCompras() {}
+  irCarritoCompras() {
+    this.router.navigate([
+      `/detalle-cliente/${this.clienteSeleccionado!.customer_id}/carritoCompras`,
+    ]);
+  }
 
   back() {
     window.history.back();
+  }
+
+  agregarAlCarrito() {
+    if (this.productoSeleccionado) {
+      this.carritoComprasService.addToCurrentCart(this.productoSeleccionado);
+      this.productoSeleccionado.quantity_selected = 0;
+    }
   }
 }

@@ -1,0 +1,8 @@
+.contenedor-total {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  padding: 1rem;
+  background-color: var(--primary-100);
+  box-sizing: border-box;
+}

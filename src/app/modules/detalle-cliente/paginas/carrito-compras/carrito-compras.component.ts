@@ -15,6 +15,9 @@ import {
 import { Cliente } from 'src/app/modules/clientes/interfaces/cliente.interface';
 import { ClientesService } from 'src/app/modules/clientes/servicios/clientes.service';
 import { sharedImports } from 'src/app/shared/otros/shared-imports';
+import { CarritoComprasService } from '../../servicios/carrito-compras.service';
+import { Producto } from '../../interfaces/productos.interface';
+import { LocalCurrencyPipe } from 'src/app/shared/pipes/local-currency.pipe';
 
 @Component({
   selector: 'app-carrito-compras',
@@ -31,14 +34,17 @@ import { sharedImports } from 'src/app/shared/otros/shared-imports';
     CommonModule,
     MatCard,
     ReactiveFormsModule,
+    LocalCurrencyPipe,
   ],
 })
 export class CarritoComprasComponent implements ViewWillEnter {
   clienteSeleccionado?: Cliente;
+  productosCarritoCompras: Producto[] = [];
 
   constructor(
     private clientesService: ClientesService,
     private router: Router,
+    private carritoComprasService: CarritoComprasService,
   ) {}
 
   ionViewWillEnter() {
@@ -48,12 +54,38 @@ export class CarritoComprasComponent implements ViewWillEnter {
   obtenerInfoCliente() {
     if (this.clientesService.clienteSeleccionado) {
       this.clienteSeleccionado = this.clientesService.clienteSeleccionado;
+      this.obtenerProductosCarritoCompras();
     } else {
       this.router.navigate(['/home']);
     }
   }
 
+  obtenerProductosCarritoCompras() {
+    this.productosCarritoCompras = this.carritoComprasService.getCurrentCart();
+  }
+
   back() {
     window.history.back();
   }
+
+  eliminarProducto(producto: Producto) {
+    this.carritoComprasService.removeFromCurrentCart(producto.product_id!);
+    this.obtenerProductosCarritoCompras();
+  }
+
+  onChangeCantidad(producto: Producto) {
+    this.carritoComprasService.updateProductQuantity(
+      producto.product_id!,
+      producto.quantity_selected!,
+    );
+    this.obtenerProductosCarritoCompras();
+  }
+
+  get totalCarritoCompras() {
+    return this.productosCarritoCompras.reduce((total, producto) => {
+      return total + producto.price! * producto.quantity_selected!;
+    }, 0);
+  }
+
+  realizarPedido() {}
 }

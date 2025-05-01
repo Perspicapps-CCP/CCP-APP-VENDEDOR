@@ -16,7 +16,7 @@
             >shopping_cart</mat-icon
           >
         </ion-button>
-        <div class="badge">10</div>
+        <div class="badge">{{ carritoCount | async }}</div>
       </ion-buttons>
     </ion-toolbar>
   </ion-header>
@@ -35,8 +35,8 @@
       </div>
       <div class="flex flex-col flex-grow h-full overflow-auto gap-2">
         @for (producto of filterProductos$ | async; track producto.product_id; let i = $index) {
-          <mat-card class="producto-catalogo" (click)="irDetalleProducto(producto)">
-            <div class="detalle-producto">
+          <mat-card class="producto-catalogo">
+            <div class="detalle-producto" (click)="irDetalleProducto(producto)">
               <div class="image-producto">
                 <img [src]="producto.images[0]" [alt]="'image ' + producto.product_name" />
               </div>
@@ -59,10 +59,12 @@
             <div class="opciones-cantidad">
               <div class="input-group input-group-sm">
                 <input
-                  type="text"
+                  type="number"
                   class="form-control"
                   [placeholder]="'CATALOGO_PRODUCTOS.FORM.QUANTITY' | translate"
-                  aria-describedby="cantidad-producto" />
+                  aria-describedby="cantidad-producto"
+                  [(ngModel)]="producto.quantity_selected"
+                  appNumbersOnly />
                 <span class="input-group-text"
                   >{{ producto.quantity < 100 ? producto.quantity : '+99' }}
                   {{ 'CATALOGO_PRODUCTOS.AVALIABLE' | translate }}</span
@@ -72,7 +74,12 @@
                 <button
                   type="button"
                   class="btn btn-primary btn-actions btn-sm"
-                  (click)="$event.stopPropagation()">
+                  (click)="agregarAlCarrito(producto)"
+                  [disabled]="
+                    !producto.quantity_selected ||
+                    producto.quantity_selected <= 0 ||
+                    producto.quantity_selected > producto.quantity
+                  ">
                   <mat-icon>add_shopping_cart</mat-icon>
                 </button>
               </div>

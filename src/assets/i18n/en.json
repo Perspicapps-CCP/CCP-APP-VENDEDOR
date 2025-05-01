@@ -72,5 +72,19 @@
     "FORM": {
       "QUANTITY": "Quantity"
     }
+  },
+  "CARRITO_COMPRAS": {
+    "TITLE": "Shopping Cart",
+    "BUTTON": {
+      "ORDER": "Place order",
+      "REMOVE_PRODUCT": "Remove product"
+    },
+    "UNIT_PRODUCT": "Unit",
+    "AVALIABLE": "Available",
+    "FORM": {
+      "QUANTITY": "Quantity"
+    },
+    "TOTAL": "Total",
+    "ARTICLES": "Articles"
   }
 }

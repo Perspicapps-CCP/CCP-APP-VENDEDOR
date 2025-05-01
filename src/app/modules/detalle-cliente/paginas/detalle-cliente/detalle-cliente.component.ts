@@ -13,6 +13,8 @@ import {
 import { Cliente } from 'src/app/modules/clientes/interfaces/cliente.interface';
 import { ClientesService } from 'src/app/modules/clientes/servicios/clientes.service';
 import { sharedImports } from 'src/app/shared/otros/shared-imports';
+import { CarritoComprasService } from '../../servicios/carrito-compras.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-detalle-cliente',
@@ -32,10 +34,12 @@ import { sharedImports } from 'src/app/shared/otros/shared-imports';
 })
 export class DetalleClienteComponent implements OnInit {
   clienteSeleccionado?: Cliente;
+  carritoCount?: Observable<string>;
 
   constructor(
     private clientesService: ClientesService,
     private router: Router,
+    private carritoComprasService: CarritoComprasService,
   ) {}
 
   ngOnInit() {
@@ -45,6 +49,8 @@ export class DetalleClienteComponent implements OnInit {
   obtenerInfoCliente() {
     if (this.clientesService.clienteSeleccionado) {
       this.clienteSeleccionado = this.clientesService.clienteSeleccionado;
+      this.carritoComprasService.setCurrentClient(this.clienteSeleccionado.customer_id);
+      this.carritoCount = this.carritoComprasService.getCartItemCount();
     } else {
       this.router.navigate(['/home']);
     }
