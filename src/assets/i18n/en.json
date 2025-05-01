@@ -38,5 +38,14 @@
   "VISITAS": {
     "TITLE": "Visits",
     "SEARCH_PLACEHOLDER": "Filter Visits"
+  },
+  "DETALLE-CLIENTE": {
+    "BUTTON": {
+      "CLIENT_VIDEOS": "See videos details",
+      "CATALOG_PRODUCTS": "See catalog products",
+      "SHOOPING_CART": "See shopping cart",
+      "ORDER_DETAIL": "See order"
+    },
+    "CLIENT_ORDERS": "Orders"
   }
 }

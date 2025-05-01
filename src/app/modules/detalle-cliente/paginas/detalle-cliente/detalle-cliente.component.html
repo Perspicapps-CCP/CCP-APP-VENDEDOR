@@ -28,6 +28,43 @@
     </ion-toolbar>
   </ion-header>
   <ion-content class="ion-no-padding">
-    <div class="map-container">detalle cliente</div>
+    <div class="flex flex-col w-full h-full p-[0.75rem]">
+      <div class="flex flex-col gap-[1.25rem] pb-2">
+        <mat-card
+          appearance="raised"
+          class="flex justify-center content-center gap-[0.75rem] p-[0.75rem]">
+          <div class="image-customer">
+            <img
+              [src]="clienteSeleccionado?.customer_image"
+              [alt]="'image ' + clienteSeleccionado?.customer_name" />
+          </div>
+          <div class="content-customer">
+            <div class="item-customer">
+              <mat-icon class="material-symbols-rounded">id_card</mat-icon>
+              <span [innerHTML]="clienteSeleccionado?.identification"></span>
+            </div>
+            <div class="item-customer">
+              <mat-icon class="material-symbols-rounded">distance</mat-icon>
+              <span [innerHTML]="clienteSeleccionado?.addressString"></span>
+            </div>
+
+            <div class="item-customer">
+              <mat-icon class="material-symbols-rounded">call</mat-icon>
+              <span [innerHTML]="clienteSeleccionado?.phone"></span>
+            </div>
+          </div>
+        </mat-card>
+        <div>
+          <button type="button" class="btn btn-dark-primary" (click)="navegarAVideoDetalle()">
+            {{ 'DETALLE-CLIENTE.BUTTON.CLIENT_VIDEOS' | translate }}
+          </button>
+        </div>
+        <div class="order-title">
+          <mat-icon class="material-symbols-rounded">quick_reorder</mat-icon>
+          <span>{{ 'DETALLE-CLIENTE.CLIENT_ORDERS' | translate }}</span>
+        </div>
+      </div>
+      <div class="flex flex-col flex-grow h-full overflow-auto"></div>
+    </div>
   </ion-content>
 </div>

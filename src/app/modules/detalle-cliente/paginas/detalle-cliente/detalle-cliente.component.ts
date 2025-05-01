@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { MatCard } from '@angular/material/card';
 import { Router } from '@angular/router';
 import {
   IonButton,
@@ -26,6 +27,7 @@ import { sharedImports } from 'src/app/shared/otros/shared-imports';
     IonContent,
     IonHeader,
     CommonModule,
+    MatCard,
   ],
 })
 export class DetalleClienteComponent implements OnInit {
@@ -43,6 +45,7 @@ export class DetalleClienteComponent implements OnInit {
   obtenerInfoCliente() {
     if (this.clientesService.ClienteSeleccionado) {
       this.clienteSeleccionado = this.clientesService.ClienteSeleccionado;
+      console.log('Cliente seleccionado', this.clienteSeleccionado);
     } else {
       this.router.navigate(['/home']);
     }
@@ -59,4 +62,6 @@ export class DetalleClienteComponent implements OnInit {
     ]);
   }
   carritoCompras() {}
+
+  navegarAVideoDetalle() {}
 }
