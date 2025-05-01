@@ -1,0 +1,70 @@
+<div class="flex flex-col h-full w-full">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button id="open-modal" (click)="back()">
+          <mat-icon style="color: var(--bs-gray-600)" slot="icon-only">arrow_back</mat-icon>
+        </ion-button>
+      </ion-buttons>
+
+      <ion-buttons slot="end">
+        <ion-button (click)="irCarritoCompras()">
+          <mat-icon
+            class="material-symbols-rounded"
+            style="color: var(--bs-gray-600)"
+            slot="icon-only"
+            >shopping_cart</mat-icon
+          >
+        </ion-button>
+        <div class="badge">10</div>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  @if (productoSeleccionado) {
+    <ion-content class="ion-no-padding">
+      <div class="flex flex-col w-full h-full p-[0.75rem] gap-[0.5rem]">
+        <div class="flex flex-col gap-[0.5rem]">
+          <app-visor-imagenes [producto]="productoSeleccionado"></app-visor-imagenes>
+
+          <div class="text-sm font-bold">
+            <span>{{ productoSeleccionado.product_name }}</span>
+          </div>
+
+          <div>
+            <span class="text-xs font-bold text-gray-500"
+              >{{ 'DETALLE_PRODUCTO.AVALIABLE' | translate }}:
+              {{ productoSeleccionado.quantity }}</span
+            >
+          </div>
+
+          <div>
+            <span class="text-xs font-bold"
+              >{{ productoSeleccionado.price_currency }} /
+              {{ 'CATALOGO_PRODUCTOS.UNIT_PRODUCT' | translate }}
+            </span>
+          </div>
+        </div>
+
+        <div class="flex flex-1"></div>
+        <div>
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              [placeholder]="'DETALLE_PRODUCTO.FORM.QUANTITY' | translate"
+              aria-describedby="cantidad-producto" />
+            <span class="input-group-text"
+              >{{ productoSeleccionado.quantity < 100 ? productoSeleccionado.quantity : '+99' }}
+              {{ 'DETALLE_PRODUCTO.AVALIABLE' | translate }}</span
+            >
+          </div>
+        </div>
+        <div class="w-full">
+          <button type="button" class="btn btn-primary w-full">
+            {{ 'DETALLE_PRODUCTO.BUTTON.ADD_TO_CART' | translate }}
+          </button>
+        </div>
+      </div>
+    </ion-content>
+  }
+</div>

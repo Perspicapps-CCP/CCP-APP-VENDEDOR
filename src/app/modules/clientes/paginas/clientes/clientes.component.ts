@@ -78,7 +78,7 @@ export class ClientesComponent implements ViewWillEnter {
   }
 
   navegarADetalleCliente(cliente: Cliente) {
-    this.clientesService.ClienteSeleccionado = cliente;
+    this.clientesService.clienteSeleccionado = cliente;
     this.router.navigate(['/detalle-cliente', cliente.customer_id]);
   }
 }

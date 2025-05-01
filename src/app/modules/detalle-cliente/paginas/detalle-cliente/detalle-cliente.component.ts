@@ -43,8 +43,8 @@ export class DetalleClienteComponent implements OnInit {
   }
 
   obtenerInfoCliente() {
-    if (this.clientesService.ClienteSeleccionado) {
-      this.clienteSeleccionado = this.clientesService.ClienteSeleccionado;
+    if (this.clientesService.clienteSeleccionado) {
+      this.clienteSeleccionado = this.clientesService.clienteSeleccionado;
       console.log('Cliente seleccionado', this.clienteSeleccionado);
     } else {
       this.router.navigate(['/home']);

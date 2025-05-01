@@ -20,11 +20,13 @@ export const DETALLE_CLIENTE_ROUTES: Routes = [
         c => c.CatalogoProductosComponent,
       ),
   },
-  // {
-  //   path: ':idCliente/catalogoProductos/:idProducto',
-  //   loadComponent: () =>
-  //     import('./paginas/catalogo/detalle-producto.component').then(c => c.DetalleProductoComponent),
-  // },
+  {
+    path: ':idCliente/catalogoProductos/:idProducto',
+    loadComponent: () =>
+      import('./paginas/detalle-producto/detalle-producto.component').then(
+        c => c.DetalleProductoComponent,
+      ),
+  },
   // {
   //   path: ':idCliente/videos',
   //   loadComponent: () => import('./paginas/videos/videos.component').then(c => c.VideosComponent),

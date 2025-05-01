@@ -10,7 +10,7 @@ import { Cliente, ClienteResponse } from '../interfaces/cliente.interface';
 export class ClientesService {
   private apiUrl = environment.apiUrlCCP;
 
-  private clienteSeleccionado: Cliente | null = null;
+  private _clienteSeleccionado: Cliente | null = null;
 
   constructor(private http: HttpClient) {}
 
@@ -35,11 +35,11 @@ export class ClientesService {
     );
   }
 
-  set ClienteSeleccionado(cliente: Cliente) {
-    this.clienteSeleccionado = cliente;
+  set clienteSeleccionado(cliente: Cliente) {
+    this._clienteSeleccionado = cliente;
   }
 
-  get ClienteSeleccionado(): Cliente | null {
-    return this.clienteSeleccionado;
+  get clienteSeleccionado(): Cliente | null {
+    return this._clienteSeleccionado;
   }
 }

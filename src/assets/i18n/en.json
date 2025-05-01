@@ -47,5 +47,30 @@
       "ORDER_DETAIL": "See order"
     },
     "CLIENT_ORDERS": "Orders"
+  },
+  "CATALOGO_PRODUCTOS": {
+    "TITLE": "Catalog Products",
+    "SEARCH_PLACEHOLDER": "Filter Catalog Products",
+    "NO_CATALOG_PRODUCTS": "No catalog products found",
+    "PRODUCT_DETAIL_BTN": "See Product Detail",
+    "BUTTON": {
+      "ADD_TO_CART": "Add to cart",
+      "SHOOPING_CART": "See shopping cart"
+    },
+    "UNIT_PRODUCT": "Unit",
+    "AVALIABLE": "Available",
+    "FORM": {
+      "QUANTITY": "Quantity"
+    }
+  },
+  "DETALLE_PRODUCTO": {
+    "BUTTON": {
+      "ADD_TO_CART": "Add to cart"
+    },
+    "UNIT_PRODUCT": "Unit",
+    "AVALIABLE": "Available",
+    "FORM": {
+      "QUANTITY": "Quantity"
+    }
   }
 }
