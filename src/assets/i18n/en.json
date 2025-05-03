@@ -85,6 +85,7 @@
       "QUANTITY": "Quantity"
     },
     "TOTAL": "Total",
-    "ARTICLES": "Articles"
+    "ARTICLES": "Articles",
+    "CREAR_PEDIDO": "Crear pedido"
   }
 }

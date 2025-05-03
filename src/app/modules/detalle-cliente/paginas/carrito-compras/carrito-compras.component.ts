@@ -88,4 +88,10 @@ export class CarritoComprasComponent implements ViewWillEnter {
   }
 
   realizarPedido() {}
+
+  get disabledPedido() {
+    return this.productosCarritoCompras.some(producto => {
+      return producto.quantity_selected === 0 || producto.quantity_selected > producto.quantity;
+    });
+  }
 }

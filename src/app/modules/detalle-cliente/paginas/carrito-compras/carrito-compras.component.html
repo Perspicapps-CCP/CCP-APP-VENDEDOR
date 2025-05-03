@@ -6,7 +6,7 @@
           <mat-icon style="color: var(--bs-gray-600)" slot="icon-only">arrow_back</mat-icon>
         </ion-button>
       </ion-buttons>
-      <ion-title>{{ 'CATALOGO_PRODUCTOS.TITLE' | translate }}</ion-title>
+      <ion-title>{{ 'CARRITO_COMPRAS.TITLE' | translate }}</ion-title>
     </ion-toolbar>
   </ion-header>
   <ion-content class="ion-no-padding">
@@ -40,7 +40,9 @@
                     [placeholder]="'CATALOGO_PRODUCTOS.FORM.QUANTITY' | translate"
                     aria-describedby="cantidad-producto"
                     [(ngModel)]="producto.quantity_selected"
-                    (ngModelChange)="onChangeCantidad(producto)"
+                    (change)="onChangeCantidad(producto)"
+                    min="0"
+                    [max]="producto.quantity"
                     appNumbersOnly />
                   <span class="input-group-text"
                     >{{ producto.quantity < 100 ? producto.quantity : '+99' }}
@@ -66,8 +68,12 @@
           <span>{{ totalCarritoCompras | localCurrency }}</span>
         </div>
         <div class="flex w-full">
-          <button type="button" class="btn btn-primary w-full" (click)="realizarPedido()">
-            {{ 'DETALLE_PRODUCTO.BUTTON.ADD_TO_CART' | translate }}
+          <button
+            type="button"
+            class="btn btn-primary w-full"
+            (click)="realizarPedido()"
+            [disabled]="disabledPedido">
+            {{ 'CARRITO_COMPRAS.CREAR_PEDIDO' | translate }}
           </button>
         </div>
       </div>

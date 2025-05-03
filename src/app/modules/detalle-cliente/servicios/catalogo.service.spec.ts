@@ -25,6 +25,7 @@ describe('CatalogoService', () => {
       price_currency: '',
       images: ['imagen1.jpg', 'imagen2.jpg'],
       quantity: 1,
+      quantity_selected: 0,
     },
     {
       product_id: 'P002',
@@ -35,6 +36,7 @@ describe('CatalogoService', () => {
       price_currency: '',
       images: ['imagen3.jpg', 'imagen4.jpg'],
       quantity: 2,
+      quantity_selected: 0,
     },
   ];
 
@@ -49,6 +51,7 @@ describe('CatalogoService', () => {
       price_currency: '$ 100.00',
       images: ['imagen1.jpg', 'imagen2.jpg'],
       quantity: 1,
+      quantity_selected: 0,
     },
     {
       product_id: 'P002',
@@ -59,6 +62,7 @@ describe('CatalogoService', () => {
       price_currency: '$ 200.00',
       images: ['imagen3.jpg', 'imagen4.jpg'],
       quantity: 2,
+      quantity_selected: 0,
     },
   ];
 

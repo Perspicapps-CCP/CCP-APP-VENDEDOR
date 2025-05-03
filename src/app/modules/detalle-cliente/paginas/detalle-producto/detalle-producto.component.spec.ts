@@ -17,6 +17,8 @@ import {
   TranslateStore,
 } from '@ngx-translate/core';
 import { BehaviorSubject, of } from 'rxjs';
+import { CarritoComprasService } from '../../servicios/carrito-compras.service';
+import { Storage } from '@ionic/storage-angular';
 
 // Clase Mock para TranslateLoader
 export class MockTranslateLoader implements TranslateLoader {
@@ -48,12 +50,40 @@ class MockTranslateService {
 // Mock para VisorImagenesDialogComponent
 class MockVisorImagenesDialogComponent {}
 
+// Mock para Storage
+class MockStorage {
+  create() {
+    return Promise.resolve();
+  }
+  get(key: string) {
+    return Promise.resolve(null);
+  }
+  set(key: string, value: any) {
+    return Promise.resolve();
+  }
+  remove(key: string) {
+    return Promise.resolve();
+  }
+  clear() {
+    return Promise.resolve();
+  }
+}
+
+// Mock para CarritoComprasService
+class MockCarritoComprasService {
+  getCartItemCount() {
+    return of('0');
+  }
+  addToCurrentCart(producto: Producto) {}
+}
+
 describe('DetalleProductoComponent', () => {
   let component: DetalleProductoComponent;
   let fixture: ComponentFixture<DetalleProductoComponent>;
   let clientesService: any;
   let catalogoService: any;
   let router: jasmine.SpyObj<Router>;
+  let carritoComprasService: MockCarritoComprasService;
 
   // Mock de cliente
   const mockCliente: Cliente = {
@@ -75,7 +105,8 @@ describe('DetalleProductoComponent', () => {
     price: 100,
     price_currency: '$ 100.00',
     images: ['imagen1.jpg', 'imagen2.jpg'],
-    quantity: 1,
+    quantity: 10,
+    quantity_selected: 0,
   };
 
   beforeEach(async () => {
@@ -107,6 +138,8 @@ describe('DetalleProductoComponent', () => {
         { provide: Router, useValue: routerSpy },
         { provide: TranslateService, useClass: MockTranslateService },
         { provide: VisorImagenesDialogComponent, useClass: MockVisorImagenesDialogComponent },
+        { provide: CarritoComprasService, useClass: MockCarritoComprasService },
+        { provide: Storage, useClass: MockStorage },
         TranslateStore,
       ],
       schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
@@ -118,6 +151,13 @@ describe('DetalleProductoComponent', () => {
     clientesService = TestBed.inject(ClientesService);
     catalogoService = TestBed.inject(CatalogoService);
     router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    carritoComprasService = TestBed.inject(
+      CarritoComprasService,
+    ) as unknown as MockCarritoComprasService;
+
+    // Espiamos los métodos del carritoComprasService
+    spyOn(carritoComprasService, 'getCartItemCount').and.callThrough();
+    spyOn(carritoComprasService, 'addToCurrentCart').and.callThrough();
 
     fixture.detectChanges();
   });
@@ -145,6 +185,10 @@ describe('DetalleProductoComponent', () => {
 
     // Verificamos que el cliente se cargó correctamente
     expect(component.clienteSeleccionado).toEqual(mockCliente);
+
+    // Verificamos que se obtiene el contador del carrito
+    expect(carritoComprasService.getCartItemCount).toHaveBeenCalled();
+    expect(component.carritoCount).toBeDefined();
   });
 
   it('should load product from service', () => {
@@ -188,10 +232,43 @@ describe('DetalleProductoComponent', () => {
     expect(window.history.back).toHaveBeenCalled();
   });
 
-  it('should not throw error when irCarritoCompras is called', () => {
-    // Verificamos que el método existe y no causa errores al llamarse
-    expect(() => {
-      component.irCarritoCompras();
-    }).not.toThrow();
+  it('should navigate to cart when irCarritoCompras is called', () => {
+    // Establecemos el cliente seleccionado
+    component.clienteSeleccionado = mockCliente;
+
+    // Llamamos al método
+    component.irCarritoCompras();
+
+    // Verificamos la navegación
+    expect(router.navigate).toHaveBeenCalledWith([
+      `/detalle-cliente/${mockCliente.customer_id}/carritoCompras`,
+    ]);
+  });
+
+  it('should add product to cart when agregarAlCarrito is called', () => {
+    // Establecemos el producto seleccionado
+    component.productoSeleccionado = { ...mockProducto };
+
+    // Llamamos al método
+    component.agregarAlCarrito();
+
+    // Verificamos que se llamó al servicio con el producto correcto
+    expect(carritoComprasService.addToCurrentCart).toHaveBeenCalledWith(
+      component.productoSeleccionado,
+    );
+
+    // Verificamos que se resetea la cantidad seleccionada
+    expect(component.productoSeleccionado.quantity_selected).toBe(0);
+  });
+
+  it('should not add to cart if no product is selected', () => {
+    // Establecemos el producto seleccionado como undefined
+    component.productoSeleccionado = undefined;
+
+    // Llamamos al método
+    component.agregarAlCarrito();
+
+    // Verificamos que no se llamó al servicio
+    expect(carritoComprasService.addToCurrentCart).not.toHaveBeenCalled();
   });
 });

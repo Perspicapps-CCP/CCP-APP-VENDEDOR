@@ -18,6 +18,7 @@ describe('VisorImagenesDialogComponent', () => {
     price_currency: 'USD',
     images: ['image1.jpg', 'image2.jpg'],
     quantity: 1,
+    quantity_selected: 0,
   };
 
   beforeEach(async () => {

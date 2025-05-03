@@ -19,6 +19,8 @@ import {
   TranslateStore,
 } from '@ngx-translate/core';
 import { BehaviorSubject, of, throwError } from 'rxjs';
+import { CarritoComprasService } from '../../servicios/carrito-compras.service';
+import { Storage } from '@ionic/storage-angular';
 
 // Clase Mock para TranslateLoader
 export class MockTranslateLoader implements TranslateLoader {
@@ -59,6 +61,34 @@ class MockDinamicSearchService {
   }
 }
 
+// Mock para Storage
+class MockStorage {
+  create() {
+    return Promise.resolve();
+  }
+  get(key: string) {
+    return Promise.resolve(null);
+  }
+  set(key: string, value: any) {
+    return Promise.resolve();
+  }
+  remove(key: string) {
+    return Promise.resolve();
+  }
+  clear() {
+    return Promise.resolve();
+  }
+}
+
+// Mock para CarritoComprasService
+class MockCarritoComprasService {
+  setCurrentClient(clientId: string) {}
+  getCartItemCount() {
+    return of('0');
+  }
+  addToCurrentCart(producto: Producto) {}
+}
+
 describe('CatalogoProductosComponent', () => {
   let component: CatalogoProductosComponent;
   let fixture: ComponentFixture<CatalogoProductosComponent>;
@@ -66,6 +96,7 @@ describe('CatalogoProductosComponent', () => {
   let catalogoService: any; // Changed from SpyObj to any
   let router: jasmine.SpyObj<Router>;
   let dinamicSearchService: DinamicSearchService;
+  let carritoComprasService: MockCarritoComprasService;
 
   // Mock de cliente
   const mockCliente: Cliente = {
@@ -89,6 +120,7 @@ describe('CatalogoProductosComponent', () => {
       price_currency: '$ 100.00',
       images: ['imagen1.jpg', 'imagen2.jpg'],
       quantity: 1,
+      quantity_selected: 0,
     },
     {
       product_id: 'P002',
@@ -99,6 +131,7 @@ describe('CatalogoProductosComponent', () => {
       price_currency: '$ 100.00',
       images: ['imagen3.jpg', 'imagen4.jpg'],
       quantity: 2,
+      quantity_selected: 0,
     },
   ];
 
@@ -134,6 +167,8 @@ describe('CatalogoProductosComponent', () => {
         { provide: Router, useValue: routerSpy },
         { provide: DinamicSearchService, useClass: MockDinamicSearchService },
         { provide: TranslateService, useClass: MockTranslateService },
+        { provide: CarritoComprasService, useClass: MockCarritoComprasService },
+        { provide: Storage, useClass: MockStorage },
         TranslateStore,
         HighlightTextPipe,
       ],
@@ -147,6 +182,13 @@ describe('CatalogoProductosComponent', () => {
     catalogoService = TestBed.inject(CatalogoService);
     router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
     dinamicSearchService = TestBed.inject(DinamicSearchService);
+    carritoComprasService = TestBed.inject(
+      CarritoComprasService,
+    ) as unknown as MockCarritoComprasService;
+
+    // Espiamos los métodos del carritoComprasService
+    spyOn(carritoComprasService, 'getCartItemCount').and.callThrough();
+    spyOn(carritoComprasService, 'addToCurrentCart').and.callThrough();
 
     // Espiamos console.log
     spyOn(console, 'log').and.callThrough();
@@ -239,7 +281,6 @@ describe('CatalogoProductosComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/home']);
   });
 
-  // Y la prueba específica:
   it('should navigate to product detail when irDetalleProducto is called', () => {
     // Establecemos el cliente seleccionado
     component.clienteSeleccionado = mockCliente;
@@ -258,6 +299,7 @@ describe('CatalogoProductosComponent', () => {
       mockProductos[0].product_id,
     ]);
   });
+
   it('should call window.history.back when back method is called', () => {
     // Espiamos window.history.back
     spyOn(window.history, 'back');
@@ -325,9 +367,40 @@ describe('CatalogoProductosComponent', () => {
   });
 
   it('should not throw error when irCarritoCompras is called', () => {
+    // Establecemos el cliente seleccionado
+    component.clienteSeleccionado = mockCliente;
+
     // Verificamos que el método existe y no causa errores al llamarse
     expect(() => {
       component.irCarritoCompras();
     }).not.toThrow();
+
+    // Verificamos la navegación
+    expect(router.navigate).toHaveBeenCalledWith([
+      `/detalle-cliente/${mockCliente.customer_id}/carritoCompras`,
+    ]);
+  });
+
+  it('should add product to cart when agregarAlCarrito is called', () => {
+    // Creamos una copia del producto para no afectar los originales
+    const producto = { ...mockProductos[0] };
+
+    // Llamamos al método
+    component.agregarAlCarrito(producto);
+
+    // Verificamos que se llamó al servicio con el producto correcto
+    expect(carritoComprasService.addToCurrentCart).toHaveBeenCalledWith(producto);
+
+    // Verificamos que se resetea la cantidad seleccionada
+    expect(producto.quantity_selected).toBe(0);
+  });
+
+  it('should get cart count when obtaining client info', () => {
+    // Llamamos al método
+    component.obtenerInfoCliente();
+
+    // Verificamos que se obtiene el contador del carrito
+    expect(carritoComprasService.getCartItemCount).toHaveBeenCalled();
+    expect(component.carritoCount).toBeDefined();
   });
 });

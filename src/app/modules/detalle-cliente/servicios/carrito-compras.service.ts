@@ -293,4 +293,44 @@ export class CarritoComprasService {
       this.updateCartStatus();
     }
   }
+
+  // Método para actualizar la cantidad disponible de un producto en todos los carritos
+  updateProductAvailability(productId: string, newAvailableQuantity: number): void {
+    // Contador para saber cuántos carritos se actualizaron
+    let updatedCarts = 0;
+    let updatedQuantities = 0;
+
+    // Iterar sobre todos los carritos
+    this.clientCarts.forEach(clientCart => {
+      // Buscar el producto en el carrito actual
+      const productIndex = clientCart.items.findIndex(item => item.product_id === productId);
+
+      // Si el producto existe en este carrito
+      if (productIndex >= 0) {
+        const product = clientCart.items[productIndex];
+
+        // Actualizar la cantidad disponible
+        product.quantity = newAvailableQuantity;
+
+        // Verificar si la cantidad seleccionada excede la nueva cantidad disponible
+        if (product.quantity_selected > newAvailableQuantity) {
+          // Ajustar la cantidad seleccionada al máximo disponible
+          product.quantity_selected = newAvailableQuantity;
+          updatedQuantities++;
+        }
+
+        // Actualizar la fecha de modificación del carrito
+        clientCart.lastUpdated = new Date();
+        updatedCarts++;
+      }
+    });
+
+    // Si el carrito actual está seleccionado, actualizar los contadores
+    if (this.currentClientId) {
+      this.updateCartStatus();
+    }
+
+    // Guardar los cambios en el almacenamiento local
+    this.saveAllCarts();
+  }
 }

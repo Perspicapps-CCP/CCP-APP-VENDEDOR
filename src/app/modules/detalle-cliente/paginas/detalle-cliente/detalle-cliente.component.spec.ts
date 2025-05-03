@@ -14,6 +14,8 @@ import {
 } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { CarritoComprasService } from '../../servicios/carrito-compras.service';
+import { Storage } from '@ionic/storage-angular';
 
 // Clase Mock para TranslateLoader
 export class MockTranslateLoader implements TranslateLoader {
@@ -42,11 +44,39 @@ class MockTranslateService {
   onDefaultLangChange = of({});
 }
 
+// Mock para Storage
+class MockStorage {
+  create() {
+    return Promise.resolve();
+  }
+  get(key: string) {
+    return Promise.resolve(null);
+  }
+  set(key: string, value: any) {
+    return Promise.resolve();
+  }
+  remove(key: string) {
+    return Promise.resolve();
+  }
+  clear() {
+    return Promise.resolve();
+  }
+}
+
+// Mock para CarritoComprasService
+class MockCarritoComprasService {
+  setCurrentClient(clientId: string) {}
+  getCartItemCount() {
+    return of('0');
+  }
+}
+
 describe('DetalleClienteComponent', () => {
   let component: DetalleClienteComponent;
   let fixture: ComponentFixture<DetalleClienteComponent>;
   let clientesService: jasmine.SpyObj<ClientesService>;
   let router: jasmine.SpyObj<Router>;
+  let carritoComprasService: MockCarritoComprasService;
 
   // Mock de cliente
   const mockCliente: Cliente = {
@@ -81,6 +111,8 @@ describe('DetalleClienteComponent', () => {
         { provide: ClientesService, useValue: clientesServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: TranslateService, useClass: MockTranslateService },
+        { provide: CarritoComprasService, useClass: MockCarritoComprasService },
+        { provide: Storage, useClass: MockStorage },
         TranslateStore,
       ],
       schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA], // Para manejar elementos personalizados y errores no críticos
@@ -91,6 +123,13 @@ describe('DetalleClienteComponent', () => {
     component = fixture.componentInstance;
     clientesService = TestBed.inject(ClientesService) as jasmine.SpyObj<ClientesService>;
     router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    carritoComprasService = TestBed.inject(
+      CarritoComprasService,
+    ) as unknown as MockCarritoComprasService;
+
+    // Espiamos los métodos del carritoComprasService
+    spyOn(carritoComprasService, 'setCurrentClient').and.callThrough();
+    spyOn(carritoComprasService, 'getCartItemCount').and.callThrough();
 
     // Detectamos cambios
     fixture.detectChanges();
@@ -108,6 +147,18 @@ describe('DetalleClienteComponent', () => {
 
     // Verificamos que el cliente se ha cargado correctamente
     expect(component.clienteSeleccionado).toEqual(mockCliente);
+  });
+
+  it('should set current client and get cart count when obtaining client info', () => {
+    // Llamamos al método
+    component.obtenerInfoCliente();
+
+    // Verificamos que se llama a setCurrentClient con el ID correcto
+    expect(carritoComprasService.setCurrentClient).toHaveBeenCalledWith(mockCliente.customer_id);
+
+    // Verificamos que se obtiene el contador del carrito
+    expect(carritoComprasService.getCartItemCount).toHaveBeenCalled();
+    expect(component.carritoCount).toBeDefined();
   });
 
   it('should navigate back to home if no client is selected', () => {
