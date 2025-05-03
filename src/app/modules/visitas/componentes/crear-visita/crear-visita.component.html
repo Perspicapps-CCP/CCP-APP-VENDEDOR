@@ -14,17 +14,17 @@
       class="flex flex-col w-full gap-[0.25rem]">
       <div class="w-full min-h-[3.9375rem]">
         <input
-          id="typeahead-basic"
+          id="cliente-selector-input"
           type="text"
           class="form-control"
-          id="cliente selector"
           formControlName="client"
           placeholder="{{ 'VISITAS.CREAR_VISITA.FORM.CLIENT' | translate }}"
           [ngbTypeahead]="searchClientes"
           [inputFormatter]="formatter"
           [resultFormatter]="formatter"
           [selectOnExact]="true"
-          [ngClass]="{ 'is-invalid': isInvalid('client') }" />
+          [ngClass]="{ 'is-invalid': isInvalid('client') }"
+          [editable]="false" />
         <div class="invalid-feedback">
           {{ getErrorMessage('client').key | translate }}
         </div>

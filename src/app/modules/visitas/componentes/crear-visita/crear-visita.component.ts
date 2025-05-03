@@ -5,6 +5,8 @@ import { debounceTime, distinctUntilChanged, map, Observable, OperatorFunction }
 import { Cliente } from 'src/app/modules/clientes/interfaces/cliente.interface';
 import { ClientesService } from 'src/app/modules/clientes/servicios/clientes.service';
 import { sharedImports } from 'src/app/shared/otros/shared-imports';
+import { VisitasService } from '../../servicios/visitas.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-crear-visita',
@@ -16,7 +18,7 @@ export class CrearVisitaComponent implements OnInit {
   @Output() closeModal = new EventEmitter<boolean>();
 
   visitaForm = new FormGroup({
-    client: new FormControl<string>('', [Validators.required]),
+    client: new FormControl<Cliente | null>(null, [Validators.required]),
     description: new FormControl<string>('', [Validators.required]),
     images: new FormControl<any>(null, [Validators.required]),
     images_text: new FormControl<string>('', [Validators.required]),
@@ -27,6 +29,8 @@ export class CrearVisitaComponent implements OnInit {
   constructor(
     private translate: TranslateService,
     private clientesService: ClientesService,
+    private visitasService: VisitasService,
+    private _snackBar: MatSnackBar,
   ) {}
 
   ngOnInit(): void {
@@ -44,7 +48,6 @@ export class CrearVisitaComponent implements OnInit {
   ) =>
     text$.pipe(
       debounceTime(200),
-      distinctUntilChanged(),
       map(term =>
         term.length < 2
           ? []
@@ -74,12 +77,7 @@ export class CrearVisitaComponent implements OnInit {
 
   onFileSelected(event: any) {
     const files = event.target.files;
-    console.log('archivos cargados', files);
-    if (files.length > 0) {
-      const formData = new FormData();
-      for (const file of files) {
-        formData.append('images', file);
-      }
+    if (files.length > 0 && this.allFilesIsImage(files)) {
       this.translate
         .get('VISITAS.CREAR_VISITA.FORM.IMAGES_CHARGED')
         .subscribe((mensaje: string) => {
@@ -94,7 +92,47 @@ export class CrearVisitaComponent implements OnInit {
     }
   }
 
+  allFilesIsImage(files: FileList): boolean {
+    const allowedImageFormats = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'];
+
+    const allIsValid = Array.from(files).every(file => {
+      const fileName = file.name.toLowerCase();
+      return allowedImageFormats.some(format => fileName.endsWith(format));
+    });
+
+    if (!allIsValid) {
+      this.translate
+        .get('VISITAS.CREAR_VISITA.FORM_ERRORS.ALL_FILES_MUST_BE_IMAGES')
+        .subscribe((mensaje: string) => {
+          this._snackBar.open(mensaje, '', {
+            duration: 3000,
+          });
+        });
+    }
+    return allIsValid;
+  }
+
   crearVisita() {
-    console.log('Formulario submit', this.visitaForm.value);
+    const formValue = this.visitaForm.value;
+    this.visitasService
+      .registrarVisita(formValue.images, formValue.description || '', formValue.client!)
+      .subscribe({
+        next: () => {
+          this.translate.get('VISITAS.CREAR_VISITA.TOAST.SUCCESS').subscribe((mensaje: string) => {
+            this._snackBar.open(mensaje, '', {
+              duration: 3000,
+            });
+          });
+          this.closeModal.emit(true);
+        },
+        error: () => {
+          this.translate.get('VISITAS.CREAR_VISITA.TOAST.ERROR').subscribe((mensaje: string) => {
+            this._snackBar.open(mensaje, '', {
+              duration: 3000,
+            });
+          });
+          this.closeModal.emit(false);
+        },
+      });
   }
 }

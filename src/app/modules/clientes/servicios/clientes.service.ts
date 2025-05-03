@@ -19,7 +19,7 @@ export class ClientesService {
       map((clientesResponse: any) => {
         const clientInfo = clientesResponse.map((clienteResp: ClienteResponse) => {
           return {
-            customer_id: clienteResp.client.id,
+            customer_id: clienteResp.id,
             customer_name: clienteResp.client.full_name,
             identification: clienteResp.client.identification,
             addressString: clienteResp.client.address.line,

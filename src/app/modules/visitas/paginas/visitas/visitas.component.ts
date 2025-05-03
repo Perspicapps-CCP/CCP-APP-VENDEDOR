@@ -32,9 +32,7 @@ import { CrearVisitaComponent } from '../../componentes/crear-visita/crear-visit
 export class VisitasComponent {
   constructor() {}
 
-  obtenerVisitas() {
-    throw new Error('Method not implemented.');
-  }
+  obtenerVisitas() {}
 
   onWillDismiss(event: CustomEvent<OverlayEventDetail>) {
     if (event.detail.role === 'confirm') {

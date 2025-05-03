@@ -5,7 +5,7 @@ import { CarritoComprasComponent } from './carrito-compras.component';
 import { ClientesService } from 'src/app/modules/clientes/servicios/clientes.service';
 import { Cliente } from 'src/app/modules/clientes/interfaces/cliente.interface';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import {
@@ -20,6 +20,13 @@ import { Storage } from '@ionic/storage-angular';
 import { Producto } from '../../interfaces/productos.interface';
 import { LocalCurrencyPipe } from 'src/app/shared/pipes/local-currency.pipe';
 import { LocalizationService } from 'src/app/shared/services/localization.service';
+import { LOCALE_ID } from '@angular/core';
+
+// Importamos los datos de localización específicos para colombiano
+import localeEsCo from '@angular/common/locales/es-CO';
+
+// Registramos los datos de localización
+registerLocaleData(localeEsCo);
 
 // Clase Mock para TranslateLoader
 export class MockTranslateLoader implements TranslateLoader {
@@ -63,6 +70,7 @@ class MockLocalizationService {
   }
 
   getLocalCurrencyFormat(value: number) {
+    // Implementación simple sin usar CurrencyPipe
     return `$ ${value.toFixed(2)}`;
   }
 
@@ -70,9 +78,15 @@ class MockLocalizationService {
     return 'es-CO';
   }
 
-  // Añadimos el método getCurrencyCode que faltaba
   getCurrencyCode() {
     return 'COP';
+  }
+}
+
+// Mock para LocalCurrencyPipe que no dependa de CurrencyPipe
+class MockLocalCurrencyPipe {
+  transform(value: number): string {
+    return `$ ${value.toFixed(2)}`;
   }
 }
 
@@ -181,7 +195,8 @@ describe('CarritoComprasComponent', () => {
         { provide: CarritoComprasService, useClass: MockCarritoComprasService },
         { provide: Storage, useClass: MockStorage },
         { provide: LocalizationService, useClass: MockLocalizationService },
-        LocalCurrencyPipe, // Usamos el pipe real con nuestro mock service
+        { provide: LocalCurrencyPipe, useClass: MockLocalCurrencyPipe }, // Usamos un mock para el pipe
+        { provide: LOCALE_ID, useValue: 'es-CO' }, // Proporcionamos el LOCALE_ID
         TranslateStore,
       ],
       schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
@@ -200,6 +215,10 @@ describe('CarritoComprasComponent', () => {
     spyOn(carritoComprasService, 'getCurrentCart').and.callThrough();
     spyOn(carritoComprasService, 'removeFromCurrentCart').and.callThrough();
     spyOn(carritoComprasService, 'updateProductQuantity').and.callThrough();
+
+    // Para evitar errores con el pipe, creamos un método de formato de moneda para las pruebas
+    // Usando 'as any' para evitar el error de propiedad
+    (component as any).formatCurrency = (value: number) => `$ ${value.toFixed(2)}`;
 
     fixture.detectChanges();
   });

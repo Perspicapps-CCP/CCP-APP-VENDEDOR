@@ -51,11 +51,16 @@
       "FORM_ERRORS": {
         "FIELD_REQUIRED": "This field is required",
         "USERNAME_MIN_LENGTH": "User must be at least 3 characters long",
-        "PASSWORD_MIN_LENGTH": "Password must be at least 6 characters long"
+        "PASSWORD_MIN_LENGTH": "Password must be at least 6 characters long",
+        "ALL_FILES_MUST_BE_IMAGES": "All files must be images"
       },
       "BUTTON": {
         "SAVE": "Save",
         "CANCEL": "Cancel"
+      },
+      "TOAST": {
+        "SUCCESS": "Visit created successfully",
+        "ERROR": "Error creating visit"
       }
     }
   },
