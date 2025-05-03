@@ -1,0 +1,92 @@
+<div class="flex flex-col h-full w-full">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button id="open-modal" (click)="back()">
+          <mat-icon style="color: var(--bs-gray-600)" slot="icon-only">arrow_back</mat-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>{{ 'CATALOGO_PRODUCTOS.TITLE' | translate }}</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="irCarritoCompras()">
+          <mat-icon
+            class="material-symbols-rounded"
+            style="color: var(--bs-gray-600)"
+            slot="icon-only"
+            >shopping_cart</mat-icon
+          >
+        </ion-button>
+        <div class="badge">{{ carritoCount | async }}</div>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="ion-no-padding">
+    <div class="flex flex-col w-full h-full p-[0.75rem] gap-4">
+      <div class="flex">
+        <div class="flex input-group w-full">
+          <span class="input-group-text pr-2!">
+            <mat-icon style="font-size: 16px; width: 16px; height: 16px">manage_search</mat-icon>
+          </span>
+          <input
+            class="form-control border-l-0!"
+            placeholder="{{ 'CATALOGO_PRODUCTOS.SEARCH_PLACEHOLDER' | translate }}"
+            [formControl]="formBusquedaProductos" />
+        </div>
+      </div>
+      <div class="flex flex-col flex-grow h-full overflow-auto gap-2">
+        @for (producto of filterProductos$ | async; track producto.product_id; let i = $index) {
+          <mat-card class="producto-catalogo">
+            <div class="detalle-producto" (click)="irDetalleProducto(producto)">
+              <div class="image-producto">
+                <img [src]="producto.images[0]" [alt]="'image ' + producto.product_name" />
+              </div>
+              <div class="content-producto">
+                <div class="item-producto">
+                  <span
+                    [innerHTML]="
+                      producto.product_name | highlightText: formBusquedaProductos.value ?? ''
+                    "></span>
+                </div>
+                <div class="item-producto">
+                  <span
+                    [innerHTML]="
+                      producto.price_currency | highlightText: formBusquedaProductos.value ?? ''
+                    "></span>
+                  <span> / {{ 'CATALOGO_PRODUCTOS.UNIT_PRODUCT' | translate }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="opciones-cantidad">
+              <div class="input-group input-group-sm">
+                <input
+                  type="number"
+                  class="form-control"
+                  [placeholder]="'CATALOGO_PRODUCTOS.FORM.QUANTITY' | translate"
+                  aria-describedby="cantidad-producto"
+                  [(ngModel)]="producto.quantity_selected"
+                  appNumbersOnly />
+                <span class="input-group-text"
+                  >{{ producto.quantity < 100 ? producto.quantity : '+99' }}
+                  {{ 'CATALOGO_PRODUCTOS.AVALIABLE' | translate }}</span
+                >
+              </div>
+              <div>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-actions btn-sm"
+                  (click)="agregarAlCarrito(producto)"
+                  [disabled]="
+                    !producto.quantity_selected ||
+                    producto.quantity_selected <= 0 ||
+                    producto.quantity_selected > producto.quantity
+                  ">
+                  <mat-icon>add_shopping_cart</mat-icon>
+                </button>
+              </div>
+            </div>
+          </mat-card>
+        }
+      </div>
+    </div>
+  </ion-content>
+</div>

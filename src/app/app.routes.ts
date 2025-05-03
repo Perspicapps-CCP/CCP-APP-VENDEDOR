@@ -34,7 +34,15 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'detalle-cliente',
+    loadChildren: () =>
+      import('./modules/detalle-cliente/detalle-cliente.routes').then(
+        m => m.DETALLE_CLIENTE_ROUTES,
+      ),
+    canActivate: [validateTokenGuard],
+  },
+  {
     path: '**',
-    redirectTo: 'auth',
+    redirectTo: 'home',
   },
 ];

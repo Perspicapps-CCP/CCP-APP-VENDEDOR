@@ -37,6 +37,80 @@
   },
   "VISITAS": {
     "TITLE": "Visits",
-    "SEARCH_PLACEHOLDER": "Filter Visits"
+    "SEARCH_PLACEHOLDER": "Filter Visits",
+    "NO_RESENT_VISIT": "Visits without recent visits",
+    "CREAR_VISITA": {
+      "TITLE": "Create Visit",
+      "FORM": {
+        "CLIENT": "Select client",
+        "DESCRIPCION_VISITA": "Enter a visit description",
+        "IMAGES_UPLOAD": "Upload",
+        "NOT_IMAGES": "No images to upload",
+        "IMAGES_CHARGED": "images charged"
+      },
+      "FORM_ERRORS": {
+        "FIELD_REQUIRED": "This field is required",
+        "USERNAME_MIN_LENGTH": "User must be at least 3 characters long",
+        "PASSWORD_MIN_LENGTH": "Password must be at least 6 characters long",
+        "ALL_FILES_MUST_BE_IMAGES": "All files must be images"
+      },
+      "BUTTON": {
+        "SAVE": "Save",
+        "CANCEL": "Cancel"
+      },
+      "TOAST": {
+        "SUCCESS": "Visit created successfully",
+        "ERROR": "Error creating visit"
+      }
+    }
+  },
+  "DETALLE-CLIENTE": {
+    "BUTTON": {
+      "CLIENT_VIDEOS": "See videos details",
+      "CATALOG_PRODUCTS": "See catalog products",
+      "SHOOPING_CART": "See shopping cart",
+      "ORDER_DETAIL": "See order"
+    },
+    "CLIENT_ORDERS": "Orders"
+  },
+  "CATALOGO_PRODUCTOS": {
+    "TITLE": "Catalog Products",
+    "SEARCH_PLACEHOLDER": "Filter Catalog Products",
+    "NO_CATALOG_PRODUCTS": "No catalog products found",
+    "PRODUCT_DETAIL_BTN": "See Product Detail",
+    "BUTTON": {
+      "ADD_TO_CART": "Add to cart",
+      "SHOOPING_CART": "See shopping cart"
+    },
+    "UNIT_PRODUCT": "Unit",
+    "AVALIABLE": "Available",
+    "FORM": {
+      "QUANTITY": "Quantity"
+    }
+  },
+  "DETALLE_PRODUCTO": {
+    "BUTTON": {
+      "ADD_TO_CART": "Add to cart"
+    },
+    "UNIT_PRODUCT": "Unit",
+    "AVALIABLE": "Available",
+    "FORM": {
+      "QUANTITY": "Quantity"
+    }
+  },
+  "CARRITO_COMPRAS": {
+    "TITLE": "Shopping Cart",
+    "BUTTON": {
+      "ORDER": "Place order",
+      "REMOVE_PRODUCT": "Remove product"
+    },
+    "UNIT_PRODUCT": "Unit",
+    "AVALIABLE": "Available",
+    "FORM": {
+      "QUANTITY": "Quantity"
+    },
+    "TOTAL": "Total",
+    "ARTICLES": "Articles",
+    "CREAR_PEDIDO": "Crear pedido"
   }
 }

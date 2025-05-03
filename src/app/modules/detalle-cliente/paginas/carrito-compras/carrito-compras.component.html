@@ -1,0 +1,82 @@
+<div class="flex flex-col h-full w-full">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button id="open-modal" (click)="back()">
+          <mat-icon style="color: var(--bs-gray-600)" slot="icon-only">arrow_back</mat-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>{{ 'CARRITO_COMPRAS.TITLE' | translate }}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="ion-no-padding">
+    <div class="flex flex-col w-full h-full">
+      <div class="flex flex-col w-full h-full p-[0.75rem] gap-[0.5rem]">
+        <span class="text-base"
+          >{{ 'CARRITO_COMPRAS.ARTICLES' | translate }} {{ productosCarritoCompras.length }}</span
+        >
+        <div class="flex flex-col flex-1 h-full overflow-auto gap-2">
+          @for (producto of productosCarritoCompras; track producto.product_id; let i = $index) {
+            <mat-card class="producto-catalogo">
+              <div class="detalle-producto">
+                <div class="image-producto">
+                  <img [src]="producto.images[0]" [alt]="'image ' + producto.product_name" />
+                </div>
+                <div class="content-producto">
+                  <div class="item-producto">
+                    <span>{{ producto.product_name }}</span>
+                  </div>
+                  <div class="item-producto">
+                    <span>{{ producto.price_currency }}</span>
+                    <span> / {{ 'CATALOGO_PRODUCTOS.UNIT_PRODUCT' | translate }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="opciones-cantidad">
+                <div class="input-group input-group-sm">
+                  <input
+                    type="number"
+                    class="form-control"
+                    [placeholder]="'CATALOGO_PRODUCTOS.FORM.QUANTITY' | translate"
+                    aria-describedby="cantidad-producto"
+                    [(ngModel)]="producto.quantity_selected"
+                    (change)="onChangeCantidad(producto)"
+                    min="0"
+                    [max]="producto.quantity"
+                    appNumbersOnly />
+                  <span class="input-group-text"
+                    >{{ producto.quantity < 100 ? producto.quantity : '+99' }}
+                    {{ 'CATALOGO_PRODUCTOS.AVALIABLE' | translate }}</span
+                  >
+                </div>
+                <div>
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-actions btn-sm"
+                    (click)="eliminarProducto(producto)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-card>
+          }
+        </div>
+      </div>
+      <div class="contenedor-total">
+        <div class="flex w-full gap-2 place-content-between text-xl font-bold p-2">
+          <span>Total</span>
+          <span>{{ totalCarritoCompras | localCurrency }}</span>
+        </div>
+        <div class="flex w-full">
+          <button
+            type="button"
+            class="btn btn-primary w-full"
+            (click)="realizarPedido()"
+            [disabled]="disabledPedido">
+            {{ 'CARRITO_COMPRAS.CREAR_PEDIDO' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</div>

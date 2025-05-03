@@ -10,6 +10,8 @@ import { Cliente, ClienteResponse } from '../interfaces/cliente.interface';
 export class ClientesService {
   private apiUrl = environment.apiUrlCCP;
 
+  private _clienteSeleccionado: Cliente | null = null;
+
   constructor(private http: HttpClient) {}
 
   obtenerClientes(): Observable<Cliente[]> {
@@ -17,7 +19,7 @@ export class ClientesService {
       map((clientesResponse: any) => {
         const clientInfo = clientesResponse.map((clienteResp: ClienteResponse) => {
           return {
-            customer_id: clienteResp.client.id,
+            customer_id: clienteResp.id,
             customer_name: clienteResp.client.full_name,
             identification: clienteResp.client.identification,
             addressString: clienteResp.client.address.line,
@@ -31,5 +33,13 @@ export class ClientesService {
         return clientInfo;
       }),
     );
+  }
+
+  set clienteSeleccionado(cliente: Cliente) {
+    this._clienteSeleccionado = cliente;
+  }
+
+  get clienteSeleccionado(): Cliente | null {
+    return this._clienteSeleccionado;
   }
 }
