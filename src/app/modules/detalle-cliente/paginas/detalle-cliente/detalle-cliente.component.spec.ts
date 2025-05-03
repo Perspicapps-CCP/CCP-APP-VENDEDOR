@@ -16,6 +16,10 @@ import { of } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { CarritoComprasService } from '../../servicios/carrito-compras.service';
 import { Storage } from '@ionic/storage-angular';
+import { DetalleClienteService } from '../../servicios/detalle-cliente.service';
+import { HttpClient, HttpClientModule, provideHttpClient } from '@angular/common/http';
+import { Sales } from '../../interfaces/ventas.interface';
+import { LocalDatePipe } from 'src/app/shared/pipes/local-date.pipe';
 
 // Clase Mock para TranslateLoader
 export class MockTranslateLoader implements TranslateLoader {
@@ -71,12 +75,51 @@ class MockCarritoComprasService {
   }
 }
 
+// Mock para DetalleClienteService
+class MockDetalleClienteService {
+  obtenerVentasPorCliente(clientId: string) {
+    const mockSales: Sales[] = [
+      {
+        id: '001',
+        order_number: 'ORD-001',
+        total: 1500,
+        date: new Date('2025-01-01'),
+        status: 'completed',
+        client: {
+          id: 'client-001',
+          full_name: 'Juan Pérez',
+          email: 'juan@example.com',
+          username: 'juanperez',
+          phone: '1234567890',
+          id_type: 'CC',
+          identification: '123456789',
+          role: 'client',
+        },
+        seller: {
+          id: 'seller-001',
+          full_name: 'Vendedor Test',
+          email: 'vendedor@example.com',
+          username: 'vendedor',
+          phone: '9876543210',
+          id_type: 'CC',
+          identification: '987654321',
+          role: 'seller',
+        },
+        items: [],
+        deliveries: [],
+      },
+    ];
+    return of(mockSales);
+  }
+}
+
 describe('DetalleClienteComponent', () => {
   let component: DetalleClienteComponent;
   let fixture: ComponentFixture<DetalleClienteComponent>;
   let clientesService: jasmine.SpyObj<ClientesService>;
   let router: jasmine.SpyObj<Router>;
   let carritoComprasService: MockCarritoComprasService;
+  let detalleClienteService: MockDetalleClienteService;
 
   // Mock de cliente
   const mockCliente: Cliente = {
@@ -102,16 +145,20 @@ describe('DetalleClienteComponent', () => {
         IonicModule.forRoot(),
         CommonModule,
         MatCardModule,
+        HttpClientModule, // Añadimos HttpClientModule
         DetalleClienteComponent,
         TranslateModule.forRoot({
           loader: { provide: TranslateLoader, useClass: MockTranslateLoader },
         }),
+        LocalDatePipe,
       ],
       providers: [
+        provideHttpClient(), // Añadimos provideHttpClient para Angular >=14
         { provide: ClientesService, useValue: clientesServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: TranslateService, useClass: MockTranslateService },
         { provide: CarritoComprasService, useClass: MockCarritoComprasService },
+        { provide: DetalleClienteService, useClass: MockDetalleClienteService },
         { provide: Storage, useClass: MockStorage },
         TranslateStore,
       ],
@@ -126,10 +173,16 @@ describe('DetalleClienteComponent', () => {
     carritoComprasService = TestBed.inject(
       CarritoComprasService,
     ) as unknown as MockCarritoComprasService;
+    detalleClienteService = TestBed.inject(
+      DetalleClienteService,
+    ) as unknown as MockDetalleClienteService;
 
     // Espiamos los métodos del carritoComprasService
     spyOn(carritoComprasService, 'setCurrentClient').and.callThrough();
     spyOn(carritoComprasService, 'getCartItemCount').and.callThrough();
+
+    // Espiamos el método del detalleClienteService
+    spyOn(detalleClienteService, 'obtenerVentasPorCliente').and.callThrough();
 
     // Detectamos cambios
     fixture.detectChanges();
@@ -149,9 +202,15 @@ describe('DetalleClienteComponent', () => {
     expect(component.clienteSeleccionado).toEqual(mockCliente);
   });
 
-  it('should set current client and get cart count when obtaining client info', () => {
+  it('should set current client, get cart count, and fetch sales when obtaining client info', () => {
+    // Espiamos el método obtenerPedidosCliente
+    spyOn(component, 'obtenerPedidosCliente').and.callThrough();
+
     // Llamamos al método
     component.obtenerInfoCliente();
+
+    // Verificamos que se llama a obtenerPedidosCliente
+    expect(component.obtenerPedidosCliente).toHaveBeenCalled();
 
     // Verificamos que se llama a setCurrentClient con el ID correcto
     expect(carritoComprasService.setCurrentClient).toHaveBeenCalledWith(mockCliente.customer_id);
@@ -159,6 +218,20 @@ describe('DetalleClienteComponent', () => {
     // Verificamos que se obtiene el contador del carrito
     expect(carritoComprasService.getCartItemCount).toHaveBeenCalled();
     expect(component.carritoCount).toBeDefined();
+  });
+
+  it('should fetch client orders using detalleClienteService', () => {
+    // Llamamos al método
+    component.obtenerPedidosCliente();
+
+    // Verificamos que se llama al servicio con el ID correcto
+    expect(detalleClienteService.obtenerVentasPorCliente).toHaveBeenCalledWith(
+      mockCliente.customer_id,
+    );
+
+    // Verificamos que se asigna la respuesta al componente
+    expect(component.pedidosCliente).toBeDefined();
+    expect(component.pedidosCliente?.length).toBe(1);
   });
 
   it('should navigate back to home if no client is selected', () => {
@@ -211,10 +284,30 @@ describe('DetalleClienteComponent', () => {
     ]);
   });
 
-  it('should not throw error when navegarAVideoDetalle is called', () => {
-    // Verificamos que el método existe y no causa errores al llamarse
-    expect(() => {
-      component.navegarAVideoDetalle();
-    }).not.toThrow();
+  it('should navigate to videos when navegarAVideoDetalle is called', () => {
+    // Aseguramos que hay un cliente seleccionado
+    component.clienteSeleccionado = mockCliente;
+
+    // Llamamos al método
+    component.navegarAVideoDetalle();
+
+    // Verificamos la navegación
+    expect(router.navigate).toHaveBeenCalledWith([
+      `/detalle-cliente/${mockCliente.customer_id}/videos`,
+    ]);
+  });
+
+  it('should navigate to order detail when navegarADetallePedido is called', () => {
+    // Aseguramos que hay un cliente seleccionado
+    component.clienteSeleccionado = mockCliente;
+    const orderId = '123';
+
+    // Llamamos al método
+    component.navegarADetallePedido(orderId);
+
+    // Verificamos la navegación
+    expect(router.navigate).toHaveBeenCalledWith([
+      `/detalle-cliente/${mockCliente.customer_id}/pedido/${orderId}`,
+    ]);
   });
 });

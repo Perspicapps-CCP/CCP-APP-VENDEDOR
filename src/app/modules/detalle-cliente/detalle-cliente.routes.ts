@@ -8,11 +8,13 @@ export const DETALLE_CLIENTE_ROUTES: Routes = [
         c => c.DetalleClienteComponent,
       ),
   },
-  // {
-  //   path: ':idCliente/pedido/:idPedido',
-  //   loadComponent: () =>
-  //     import('./paginas/pedido/detalle-pedido.component').then(c => c.DetallePedidoComponent),
-  // },
+  {
+    path: ':idCliente/pedido/:idPedido',
+    loadComponent: () =>
+      import('./paginas/detalle-pedido/detalle-pedido.component').then(
+        c => c.DetallePedidoComponent,
+      ),
+  },
   {
     path: ':idCliente/catalogoProductos',
     loadComponent: () =>
@@ -27,10 +29,13 @@ export const DETALLE_CLIENTE_ROUTES: Routes = [
         c => c.DetalleProductoComponent,
       ),
   },
-  // {
-  //   path: ':idCliente/videos',
-  //   loadComponent: () => import('./paginas/videos/videos.component').then(c => c.VideosComponent),
-  // },
+  {
+    path: ':idCliente/videos',
+    loadComponent: () =>
+      import('./paginas/detalle-videos/detalle-videos.component').then(
+        c => c.DetalleVideosComponent,
+      ),
+  },
   // {
   //   path: ':idCliente/videos/:idVideo',
   //   loadComponent: () =>

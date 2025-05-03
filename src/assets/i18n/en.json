@@ -71,7 +71,8 @@
       "SHOOPING_CART": "See shopping cart",
       "ORDER_DETAIL": "See order"
     },
-    "CLIENT_ORDERS": "Orders"
+    "CLIENT_ORDERS": "Orders",
+    "ARTICLES": "Articles"
   },
   "CATALOGO_PRODUCTOS": {
     "TITLE": "Catalog Products",
@@ -112,5 +113,23 @@
     "TOTAL": "Total",
     "ARTICLES": "Articles",
     "CREAR_PEDIDO": "Crear pedido"
+  },
+  "DETALLE_PEDIDO": {
+    "TITLE": "Order Detail",
+    "UNIT_PRODUCT": "Unit",
+    "FORM": {
+      "QUANTITY": "Quantity"
+    },
+    "TOTAL": "Total",
+    "ARTICLES": "Articles"
+  },
+  "DETALLE_VIDEOS": {
+    "TITLE": "Videos Detail",
+    "VIDEOS_CARGADOS": "Loaded videos",
+    "NO_VIDEOS": "No videos found",
+    "BUTTON": {
+      "ADD_VIDEO": "Add video",
+      "SEE_VIDEO": "See video"
+    }
   }
 }
