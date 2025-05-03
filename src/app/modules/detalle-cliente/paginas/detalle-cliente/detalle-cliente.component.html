@@ -65,7 +65,34 @@
           <span>{{ 'DETALLE-CLIENTE.CLIENT_ORDERS' | translate }}</span>
         </div>
       </div>
-      <div class="flex flex-col flex-grow h-full overflow-auto"></div>
+      <div class="flex flex-col flex-grow h-full overflow-auto">
+        @for (pedido of pedidosCliente; track pedido.id) {
+          <mat-card appearance="raised" class="card-content">
+            <div class="header-card">
+              <span>{{ 'DETALLE-CLIENTE.ARTICLES' | translate }} {{ pedido.items.length }}</span>
+              <span>{{ pedido.date | localDate }}</span>
+            </div>
+            <div class="content-card">
+              <div>
+                <span class="text-xs">Esperando Entrega&nbsp;{{ pedido.status }}</span>
+              </div>
+              <div>
+                <span class="text-sm font-bold text-gray-300"
+                  >Procesado&nbsp;{{ pedido.status }}</span
+                >
+              </div>
+              <div>
+                <button
+                  type="button"
+                  class="btn btn-dark-primary"
+                  (click)="navegarADetallePedido(pedido.id)">
+                  {{ 'DETALLE-CLIENTE.BUTTON.ORDER_DETAIL' | translate }}
+                </button>
+              </div>
+            </div>
+          </mat-card>
+        }
+      </div>
     </div>
   </ion-content>
 </div>

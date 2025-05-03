@@ -15,6 +15,9 @@ import { ClientesService } from 'src/app/modules/clientes/servicios/clientes.ser
 import { sharedImports } from 'src/app/shared/otros/shared-imports';
 import { CarritoComprasService } from '../../servicios/carrito-compras.service';
 import { Observable } from 'rxjs';
+import { DetalleClienteService } from '../../servicios/detalle-cliente.service';
+import { Sales } from '../../interfaces/ventas.interface';
+import { LocalDatePipe } from 'src/app/shared/pipes/local-date.pipe';
 
 @Component({
   selector: 'app-detalle-cliente',
@@ -30,16 +33,19 @@ import { Observable } from 'rxjs';
     IonHeader,
     CommonModule,
     MatCard,
+    LocalDatePipe,
   ],
 })
 export class DetalleClienteComponent implements OnInit {
   clienteSeleccionado?: Cliente;
   carritoCount?: Observable<string>;
+  pedidosCliente?: Sales[];
 
   constructor(
     private clientesService: ClientesService,
     private router: Router,
     private carritoComprasService: CarritoComprasService,
+    private detalleClienteService: DetalleClienteService,
   ) {}
 
   ngOnInit() {
@@ -49,6 +55,7 @@ export class DetalleClienteComponent implements OnInit {
   obtenerInfoCliente() {
     if (this.clientesService.clienteSeleccionado) {
       this.clienteSeleccionado = this.clientesService.clienteSeleccionado;
+      this.obtenerPedidosCliente();
       this.carritoComprasService.setCurrentClient(this.clienteSeleccionado.customer_id);
       this.carritoCount = this.carritoComprasService.getCartItemCount();
     } else {
@@ -72,5 +79,21 @@ export class DetalleClienteComponent implements OnInit {
     ]);
   }
 
-  navegarAVideoDetalle() {}
+  obtenerPedidosCliente() {
+    this.detalleClienteService
+      .obtenerVentasPorCliente(this.clienteSeleccionado!.customer_id)
+      .subscribe(response => {
+        this.pedidosCliente = response;
+      });
+  }
+
+  navegarADetallePedido(idPedido: string) {
+    this.router.navigate([
+      `/detalle-cliente/${this.clienteSeleccionado!.customer_id}/pedido/${idPedido}`,
+    ]);
+  }
+
+  navegarAVideoDetalle() {
+    this.router.navigate([`/detalle-cliente/${this.clienteSeleccionado!.customer_id}/videos`]);
+  }
 }
