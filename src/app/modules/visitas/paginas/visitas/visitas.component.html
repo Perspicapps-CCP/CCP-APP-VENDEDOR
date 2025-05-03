@@ -1,6 +1,15 @@
 <ion-header>
   <ion-toolbar class="px-[1.25rem]">
     <ion-title> {{ 'VISITAS.TITLE' | translate }}</ion-title>
+    <ion-buttons slot="secondary">
+      <ion-button (click)="obtenerVisitas()">
+        <mat-icon style="color: var(--bs-gray-600)" slot="icon-only">refresh</mat-icon>
+      </ion-button>
+
+      <ion-button id="btn-modal-visitas">
+        <mat-icon style="color: var(--bs-gray-600)" slot="icon-only">add_business</mat-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -9,3 +18,16 @@
     <p>clientes works!</p>
   </div>
 </ion-content>
+
+<ion-modal
+  trigger="btn-modal-visitas"
+  (willDismiss)="onWillDismiss($event)"
+  #modalCrearVisitas
+  id="modal-visitas">
+  <ng-template>
+    <app-crear-visita
+      (closeModal)="
+        modalCrearVisitas.dismiss('', $event ? 'cancel' : 'confirm')
+      "></app-crear-visita>
+  </ng-template>
+</ion-modal>

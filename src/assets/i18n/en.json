@@ -37,7 +37,27 @@
   },
   "VISITAS": {
     "TITLE": "Visits",
-    "SEARCH_PLACEHOLDER": "Filter Visits"
+    "SEARCH_PLACEHOLDER": "Filter Visits",
+    "NO_RESENT_VISIT": "Visits without recent visits",
+    "CREAR_VISITA": {
+      "TITLE": "Create Visit",
+      "FORM": {
+        "CLIENT": "Select client",
+        "DESCRIPCION_VISITA": "Enter a visit description",
+        "IMAGES_UPLOAD": "Upload",
+        "NOT_IMAGES": "No images to upload",
+        "IMAGES_CHARGED": "images charged"
+      },
+      "FORM_ERRORS": {
+        "FIELD_REQUIRED": "This field is required",
+        "USERNAME_MIN_LENGTH": "User must be at least 3 characters long",
+        "PASSWORD_MIN_LENGTH": "Password must be at least 6 characters long"
+      },
+      "BUTTON": {
+        "SAVE": "Save",
+        "CANCEL": "Cancel"
+      }
+    }
   },
   "DETALLE-CLIENTE": {
     "BUTTON": {
