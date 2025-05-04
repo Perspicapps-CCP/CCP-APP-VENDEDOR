@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { CameraPreview } from '@capacitor-community/camera-preview';
 import { Capacitor } from '@capacitor/core';
 import {
@@ -29,6 +29,9 @@ import { Filesystem, Directory } from '@capacitor/filesystem';
   ],
 })
 export class DetalleVideosComponent implements OnDestroy {
+  @ViewChild('videoPlayer') videoPlayer!: ElementRef;
+  videoFileToUpload: File | null = null;
+
   videoUrl: string | null = null;
   isRecording = false;
   isPreviewActive = false;
@@ -154,13 +157,11 @@ export class DetalleVideosComponent implements OnDestroy {
 
         // Guardamos la ruta del archivo
         if (resultRecordVideo && resultRecordVideo.videoFilePath) {
-          this.videoUrl = resultRecordVideo.videoFilePath;
-          console.log('Ruta del archivo de video:', this.videoUrl);
+          // Detener la vista previa de la cámara
+          await this.stopCameraPreview();
 
-          // Ahora podemos usar esta ruta para leer el archivo y enviarlo al backend
-          if (this.videoUrl) {
-            await this.processVideoFile(this.videoUrl);
-          }
+          // Procesar el archivo y establecer la URL para reproducción
+          await this.processVideoFile(resultRecordVideo.videoFilePath);
         } else {
           console.error('No se recibió la ruta del video grabado');
         }
@@ -177,14 +178,10 @@ export class DetalleVideosComponent implements OnDestroy {
       // Extraer el nombre del archivo de la ruta
       const fileName = filePath.split('/').pop() || 'video.mp4';
 
-      // Crear un FormData para enviar el archivo
-      const formData = new FormData();
-
       // Ruta temporal para el blob
       const tempPath = `temp_${Date.now()}.mp4`;
 
       // Copiar el archivo de la caché al directorio de documentos
-      // (esto hace que sea más accesible)
       await Filesystem.copy({
         from: fileName,
         to: tempPath,
@@ -204,19 +201,23 @@ export class DetalleVideosComponent implements OnDestroy {
           ? this.base64ToBlob(fileData.data, 'video/mp4')
           : fileData.data;
 
-      // Crear un objeto File
-      const videoFile = new File([blob], fileName, { type: 'video/mp4' });
+      // Crear una URL para el blob
+      const blobUrl = URL.createObjectURL(blob);
+      this.videoUrl = blobUrl;
 
-      console.log('Archivo de video creado:', videoFile.name, 'Tamaño:', videoFile.size);
+      console.log('URL del video creada:', this.videoUrl);
 
-      // Enviar al backend
-      await this.uploadVideoToBackend(videoFile);
+      // Guardar referencia al archivo para enviar más tarde
+      this.videoFileToUpload = new File([blob], fileName, { type: 'video/mp4' });
 
-      // Limpiar el archivo temporal
-      await Filesystem.deleteFile({
-        path: tempPath,
-        directory: Directory.Documents,
-      });
+      console.log(
+        'Archivo de video listo para enviar:',
+        this.videoFileToUpload.name,
+        'Tamaño:',
+        this.videoFileToUpload.size,
+      );
+
+      // Ya no llamamos a uploadVideoToBackend aquí, lo haremos cuando el usuario confirme
     } catch (error) {
       console.error('Error al procesar el archivo de video:', error);
     }
@@ -249,6 +250,7 @@ export class DetalleVideosComponent implements OnDestroy {
   async stopCameraPreview() {
     if (this.isRecording) {
       await this.stopRecording();
+      return; // Ya llamamos a stopCameraPreview desde stopRecording
     }
 
     if (this.isPreviewActive) {
@@ -284,6 +286,23 @@ export class DetalleVideosComponent implements OnDestroy {
       } catch (error) {
         console.error('Error al alternar el flash:', error);
       }
+    }
+  }
+
+  // Añade estos métodos para manejar la confirmación o cancelación del video
+  cancelarVideo() {
+    // Limpiar la URL del video
+    if (this.videoUrl) {
+      URL.revokeObjectURL(this.videoUrl);
+    }
+    this.videoUrl = null;
+    this.videoFileToUpload = null;
+  }
+
+  confirmarVideo() {
+    if (this.videoFileToUpload) {
+      this.uploadVideoToBackend(this.videoFileToUpload);
+      // Opcional: mostrar mensaje de éxito o navegar a otra pantalla
     }
   }
 
