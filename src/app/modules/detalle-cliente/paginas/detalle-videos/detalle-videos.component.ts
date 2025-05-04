@@ -11,6 +11,7 @@ import {
   IonToolbar,
 } from '@ionic/angular/standalone';
 import { sharedImports } from 'src/app/shared/otros/shared-imports';
+import { Filesystem, Directory } from '@capacitor/filesystem';
 
 @Component({
   selector: 'app-detalle-videos',
@@ -63,6 +64,22 @@ export class DetalleVideosComponent implements OnDestroy {
             return;
           }
 
+          // Obtener las dimensiones y posición exactas
+          const rect = container.getBoundingClientRect();
+          console.log(
+            'Dimensiones exactas: ' +
+              JSON.stringify({
+                width: Math.floor(rect.width),
+                height: Math.floor(rect.height),
+                x: Math.floor(rect.left),
+                y: Math.floor(rect.top),
+                containerOffsetTop: container.offsetTop,
+                containerOffsetLeft: container.offsetLeft,
+                windowInnerWidth: window.innerWidth,
+                windowInnerHeight: window.innerHeight,
+              }),
+          );
+
           try {
             await CameraPreview.start({
               position: this.cameraPosition,
@@ -72,13 +89,26 @@ export class DetalleVideosComponent implements OnDestroy {
               enableHighResolution: true,
               disableAudio: false,
               enableZoom: true,
-              width: container.clientWidth,
-              height: container.clientHeight,
-              x: container.offsetLeft,
-              y: container.offsetTop,
+              // Usar las dimensiones exactas del contenedor
+              width: Math.floor(rect.width - 2),
+              height: Math.floor(rect.height - 2),
+              // Ubicación exacta en la pantalla
+              x: Math.floor(rect.left + 1),
+              y: Math.floor(rect.top + 1),
             });
 
             console.log('Cámara iniciada correctamente');
+
+            // Asegurar que el elemento de la cámara tenga los estilos correctos
+            setTimeout(() => {
+              const previewElement = document.querySelector('.camera-preview');
+              if (previewElement) {
+                previewElement.setAttribute(
+                  'style',
+                  'width: 100% !important; height: 100% !important; position: absolute !important; top: 0 !important; left: 0 !important; object-fit: cover !important;',
+                );
+              }
+            }, 200);
           } catch (error) {
             console.error('Error al iniciar la cámara:', error);
             this.isPreviewActive = false;
@@ -119,15 +149,100 @@ export class DetalleVideosComponent implements OnDestroy {
         console.log('Deteniendo grabación de video...');
 
         // Detener la grabación
-        await CameraPreview.stopRecordVideo();
-        console.log('Video grabado completado');
+        const resultRecordVideo = (await CameraPreview.stopRecordVideo()) as any;
+        console.log('Video grabado completado', JSON.stringify(resultRecordVideo));
 
-        // No tenemos acceso directo a la ruta del video en esta API
-        // Lo ideal sería implementar un listener o callback
-        this.videoUrl = 'ruta/al/video/grabado.mp4';
+        // Guardamos la ruta del archivo
+        if (resultRecordVideo && resultRecordVideo.videoFilePath) {
+          this.videoUrl = resultRecordVideo.videoFilePath;
+          console.log('Ruta del archivo de video:', this.videoUrl);
+
+          // Ahora podemos usar esta ruta para leer el archivo y enviarlo al backend
+          if (this.videoUrl) {
+            await this.processVideoFile(this.videoUrl);
+          }
+        } else {
+          console.error('No se recibió la ruta del video grabado');
+        }
       } catch (error) {
         console.error('Error al detener la grabación:', error);
       }
+    }
+  }
+
+  async processVideoFile(filePath: string) {
+    try {
+      console.log('Procesando archivo de video:', filePath);
+
+      // Extraer el nombre del archivo de la ruta
+      const fileName = filePath.split('/').pop() || 'video.mp4';
+
+      // Crear un FormData para enviar el archivo
+      const formData = new FormData();
+
+      // Ruta temporal para el blob
+      const tempPath = `temp_${Date.now()}.mp4`;
+
+      // Copiar el archivo de la caché al directorio de documentos
+      // (esto hace que sea más accesible)
+      await Filesystem.copy({
+        from: fileName,
+        to: tempPath,
+        directory: Directory.Cache,
+        toDirectory: Directory.Documents,
+      });
+
+      // Ahora leer el archivo desde Documents
+      const fileData = await Filesystem.readFile({
+        path: tempPath,
+        directory: Directory.Documents,
+      });
+
+      // Convertir a blob
+      const blob =
+        typeof fileData.data === 'string'
+          ? this.base64ToBlob(fileData.data, 'video/mp4')
+          : fileData.data;
+
+      // Crear un objeto File
+      const videoFile = new File([blob], fileName, { type: 'video/mp4' });
+
+      console.log('Archivo de video creado:', videoFile.name, 'Tamaño:', videoFile.size);
+
+      // Enviar al backend
+      await this.uploadVideoToBackend(videoFile);
+
+      // Limpiar el archivo temporal
+      await Filesystem.deleteFile({
+        path: tempPath,
+        directory: Directory.Documents,
+      });
+    } catch (error) {
+      console.error('Error al procesar el archivo de video:', error);
+    }
+  }
+
+  private base64ToBlob(base64: string, type: string): Blob {
+    const binaryString = window.atob(base64);
+    const bytes = new Uint8Array(binaryString.length);
+
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+
+    return new Blob([bytes], { type: type });
+  }
+
+  async uploadVideoToBackend(videoFile: File) {
+    try {
+      console.log('Preparando para enviar video al backend...');
+
+      // Crear un FormData para enviar el archivo
+      const formData = new FormData();
+      formData.append('video', videoFile);
+      console.log('Solicitud de envío iniciada', JSON.stringify(formData));
+    } catch (error) {
+      console.error('Error al enviar el video al backend:', error);
     }
   }
 

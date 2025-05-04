@@ -31,13 +31,14 @@
           <!-- Botón para cambiar de cámara -->
 
           <div>
-            <ion-button fill="clear" shape="round" size="default">
+            <ion-button fill="clear" shape="round" size="default" (click)="switchCamera()">
               <mat-icon class="material-symbols-rounded">cameraswitch</mat-icon>
             </ion-button>
           </div>
 
           <div>
             <ion-button
+              (click)="isRecording ? stopRecording() : startRecording()"
               fill="clear"
               shape="round"
               size="large"
