@@ -19,12 +19,46 @@
       </ion-buttons>
     </ion-toolbar>
   </ion-header>
-  <ion-content class="ion-no-padding" id="content">
-    <div class="flex flex-col w-full h-full p-[0.75rem] gap-4">
-      <!-- Si estás grabando, muestra un botón para detener -->
-      <ion-button *ngIf="isRecording" (click)="stopRecording()" color="danger" expand="block">
-        Detener Grabación
-      </ion-button>
+
+  <ion-content class="ion-no-padding">
+    <div class="flex flex-col w-full h-full p-[12px] gap-4">
+      <!-- Contenedor de cámara simple -->
+      <div id="camera-preview-container" class="camera-container" *ngIf="isPreviewActive"></div>
+
+      <!-- CONTROLES SUPERPUESTOS PARA LA CÁMARA -->
+      <div *ngIf="isPreviewActive">
+        <div class="camera-buttons">
+          <!-- Botón para cambiar de cámara -->
+
+          <div>
+            <ion-button fill="clear" shape="round" size="default">
+              <mat-icon class="material-symbols-rounded">cameraswitch</mat-icon>
+            </ion-button>
+          </div>
+
+          <div>
+            <ion-button
+              fill="clear"
+              shape="round"
+              size="large"
+              color="danger"
+              class="button-record">
+              <mat-icon class="material-symbols-rounded">{{
+                isRecording ? 'radio_button_checked' : 'radio_button_unchecked'
+              }}</mat-icon>
+            </ion-button>
+          </div>
+
+          <!-- Botón para alternar el flash -->
+          <div>
+            <ion-button fill="clear" shape="round" size="default" (click)="toggleFlash()">
+              <mat-icon class="material-symbols-rounded">{{
+                flashOn ? 'flash_on' : 'flash_off'
+              }}</mat-icon>
+            </ion-button>
+          </div>
+        </div>
+      </div>
     </div>
   </ion-content>
 </div>

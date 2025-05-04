@@ -1,0 +1,23 @@
+.camera-container {
+  width: 100%;
+  flex: 1;
+  background-color: #000;
+  border-radius: 8px;
+}
+
+.camera-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  align-content: center;
+  align-items: center;
+}
+
+.button-record {
+  .button-native {
+    padding-inline-start: 0.875rem !important;
+    padding-inline-end: 0.875rem !important;
+    padding-top: 0.875rem !important;
+    padding-bottom: 0.875rem !important;
+  }
+}

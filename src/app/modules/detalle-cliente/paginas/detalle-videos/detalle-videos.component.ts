@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
+import { CameraPreview } from '@capacitor-community/camera-preview';
+import { Capacitor } from '@capacitor/core';
 import {
   IonButton,
   IonButtons,
@@ -9,8 +11,6 @@ import {
   IonToolbar,
 } from '@ionic/angular/standalone';
 import { sharedImports } from 'src/app/shared/otros/shared-imports';
-import { Capacitor } from '@capacitor/core';
-import { CameraPreview } from '@capacitor-community/camera-preview';
 
 @Component({
   selector: 'app-detalle-videos',
@@ -27,33 +27,65 @@ import { CameraPreview } from '@capacitor-community/camera-preview';
     CommonModule,
   ],
 })
-export class DetalleVideosComponent {
+export class DetalleVideosComponent implements OnDestroy {
   videoUrl: string | null = null;
   isRecording = false;
+  isPreviewActive = false;
+  flashOn = false;
+  cameraPosition: 'rear' | 'front' = 'rear';
 
   constructor() {}
 
   back() {
+    // Si la cámara está activa, detenerla antes de regresar
+    if (this.isPreviewActive) {
+      this.stopCameraPreview();
+    }
     window.history.back();
   }
 
   async agregarVideo() {
     if (Capacitor.isNativePlatform()) {
       try {
-        // Iniciar la vista previa de la cámara
-        await CameraPreview.start({
-          position: 'rear',
-          parent: 'content',
-          className: 'camera-preview',
-          toBack: true,
-          enableHighResolution: true,
-          disableAudio: false,
-        });
+        console.log('Iniciando cámara...');
 
-        // Iniciar grabación de video
-        await this.startRecording();
+        // Primero activamos la bandera para que se muestre el contenedor
+        this.isPreviewActive = true;
+
+        // Damos tiempo para que el DOM se actualice
+        setTimeout(async () => {
+          const container = document.getElementById('camera-preview-container');
+          console.log('Contenedor de cámara encontrado:', container);
+
+          if (!container) {
+            console.error('No se encontró el contenedor para la cámara');
+            this.isPreviewActive = false;
+            return;
+          }
+
+          try {
+            await CameraPreview.start({
+              position: this.cameraPosition,
+              parent: 'camera-preview-container',
+              className: 'camera-preview',
+              toBack: false,
+              enableHighResolution: true,
+              disableAudio: false,
+              enableZoom: true,
+              width: container.clientWidth,
+              height: container.clientHeight,
+              x: container.offsetLeft,
+              y: container.offsetTop,
+            });
+
+            console.log('Cámara iniciada correctamente');
+          } catch (error) {
+            console.error('Error al iniciar la cámara:', error);
+            this.isPreviewActive = false;
+          }
+        }, 100);
       } catch (error) {
-        console.error('Error al iniciar la cámara:', error);
+        console.error('Error general al iniciar la cámara:', error);
       }
     } else {
       console.log('Esta función solo está disponible en dispositivos nativos');
@@ -61,21 +93,18 @@ export class DetalleVideosComponent {
   }
 
   async startRecording() {
-    if (!this.isRecording) {
+    if (!this.isRecording && this.isPreviewActive) {
       try {
         this.isRecording = true;
         console.log('Iniciando grabación de video...');
 
-        // Comenzar a grabar (empieza a grabar automáticamente cuando se inicia la cámara)
-        const result = await CameraPreview.startRecordVideo({
+        // Comenzar a grabar
+        await CameraPreview.startRecordVideo({
           height: 1280,
           width: 720,
         });
 
-        // Para detener la grabación después de un tiempo (opcional)
-        setTimeout(() => {
-          this.stopRecording();
-        }, 10000); // Detener después de 10 segundos (ajusta según necesites)
+        console.log('Grabación iniciada');
       } catch (error) {
         console.error('Error al iniciar la grabación:', error);
         this.isRecording = false;
@@ -91,19 +120,60 @@ export class DetalleVideosComponent {
 
         // Detener la grabación
         await CameraPreview.stopRecordVideo();
-
-        // En realidad, necesitas obtener la ruta del video por otro método
-        // Este es un ejemplo, la implementación real dependerá de la API específica
         console.log('Video grabado completado');
 
-        // Para pruebas, puedes asignar una URL de muestra
+        // No tenemos acceso directo a la ruta del video en esta API
+        // Lo ideal sería implementar un listener o callback
         this.videoUrl = 'ruta/al/video/grabado.mp4';
-
-        // Detener la vista previa de la cámara
-        await CameraPreview.stop();
       } catch (error) {
         console.error('Error al detener la grabación:', error);
       }
     }
+  }
+
+  async stopCameraPreview() {
+    if (this.isRecording) {
+      await this.stopRecording();
+    }
+
+    if (this.isPreviewActive) {
+      try {
+        await CameraPreview.stop();
+        this.isPreviewActive = false;
+      } catch (error) {
+        console.error('Error al detener la vista previa:', error);
+      }
+    }
+  }
+
+  async switchCamera() {
+    if (this.isPreviewActive) {
+      try {
+        this.cameraPosition = this.cameraPosition === 'rear' ? 'front' : 'rear';
+        await CameraPreview.flip();
+      } catch (error) {
+        console.error('Error al cambiar de cámara:', error);
+      }
+    }
+  }
+
+  async toggleFlash() {
+    if (this.isPreviewActive) {
+      try {
+        this.flashOn = !this.flashOn;
+        if (this.flashOn) {
+          await CameraPreview.setFlashMode({ flashMode: 'torch' });
+        } else {
+          await CameraPreview.setFlashMode({ flashMode: 'off' });
+        }
+      } catch (error) {
+        console.error('Error al alternar el flash:', error);
+      }
+    }
+  }
+
+  // Al destruir el componente, asegurarse de detener la cámara
+  ngOnDestroy() {
+    this.stopCameraPreview();
   }
 }
