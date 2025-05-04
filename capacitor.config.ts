@@ -12,13 +12,16 @@ const config: CapacitorConfig = {
       launchShowDuration: 0,
     },
     StatusBar: {
-      backgroundColor: '#3880ff', // Color principal de tu app
+      backgroundColor: '#3880ff',
       style: 'light',
       overlaysWebView: false,
     },
+    Camera: {
+      androidUseMaxAspectRatio: true,
+    },
   },
   android: {
-    backgroundColor: '#3880ff', // Color principal de tu app
+    backgroundColor: '#3880ff',
     allowMixedContent: true,
   },
 };
