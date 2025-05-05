@@ -12,6 +12,7 @@ import {
 } from '@ionic/angular/standalone';
 import { sharedImports } from 'src/app/shared/otros/shared-imports';
 import { Filesystem, Directory } from '@capacitor/filesystem';
+import { AndroidPermissions } from '@awesome-cordova-plugins/android-permissions/ngx';
 
 @Component({
   selector: 'app-detalle-videos',
@@ -27,6 +28,7 @@ import { Filesystem, Directory } from '@capacitor/filesystem';
     IonHeader,
     CommonModule,
   ],
+  providers: [AndroidPermissions],
 })
 export class DetalleVideosComponent implements OnDestroy {
   @ViewChild('videoPlayer') videoPlayer!: ElementRef;
@@ -38,7 +40,21 @@ export class DetalleVideosComponent implements OnDestroy {
   flashOn = false;
   cameraPosition: 'rear' | 'front' = 'rear';
 
-  constructor() {}
+  constructor(private androidPermissions: AndroidPermissions) {}
+
+  async solicitarPermisos(): Promise<any> {
+    try {
+      const result = await this.androidPermissions.requestPermissions([
+        this.androidPermissions.PERMISSION.RECORD_AUDIO,
+        this.androidPermissions.PERMISSION.CAMERA,
+      ]);
+      console.log('Permisos concedidos:', result);
+      return result;
+    } catch (err) {
+      console.error('Error solicitando permisos:', err);
+      throw err;
+    }
+  }
 
   back() {
     // Si la cámara está activa, detenerla antes de regresar
@@ -51,6 +67,8 @@ export class DetalleVideosComponent implements OnDestroy {
   async agregarVideo() {
     if (Capacitor.isNativePlatform()) {
       try {
+        await this.solicitarPermisos();
+
         console.log('Iniciando cámara...');
 
         // Primero activamos la bandera para que se muestre el contenedor
@@ -133,8 +151,8 @@ export class DetalleVideosComponent implements OnDestroy {
 
         // Comenzar a grabar
         await CameraPreview.startRecordVideo({
-          height: 1280,
-          width: 720,
+          height: 720,
+          width: 480,
         });
 
         console.log('Grabación iniciada');
