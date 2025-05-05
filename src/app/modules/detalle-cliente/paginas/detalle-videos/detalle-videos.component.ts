@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CameraPreview } from '@capacitor-community/camera-preview';
 import { Capacitor } from '@capacitor/core';
 import {
@@ -9,6 +9,7 @@ import {
   IonHeader,
   IonTitle,
   IonToolbar,
+  AlertController,
 } from '@ionic/angular/standalone';
 import { sharedImports } from 'src/app/shared/otros/shared-imports';
 import { Filesystem, Directory } from '@capacitor/filesystem';
@@ -30,7 +31,7 @@ import { AndroidPermissions } from '@awesome-cordova-plugins/android-permissions
   ],
   providers: [AndroidPermissions],
 })
-export class DetalleVideosComponent implements OnDestroy {
+export class DetalleVideosComponent implements OnInit, OnDestroy {
   @ViewChild('videoPlayer') videoPlayer!: ElementRef;
   videoFileToUpload: File | null = null;
 
@@ -39,8 +40,45 @@ export class DetalleVideosComponent implements OnDestroy {
   isPreviewActive = false;
   flashOn = false;
   cameraPosition: 'rear' | 'front' = 'rear';
+  permissionsGranted = false;
 
-  constructor(private androidPermissions: AndroidPermissions) {}
+  constructor(
+    private androidPermissions: AndroidPermissions,
+    private alertController: AlertController,
+  ) {}
+
+  ngOnInit() {
+    // Verificar permisos al iniciar el componente
+    if (Capacitor.isNativePlatform()) {
+      this.verificarPermisos();
+    }
+  }
+
+  async verificarPermisos() {
+    try {
+      const cameraPermissionStatus = await this.androidPermissions.checkPermission(
+        this.androidPermissions.PERMISSION.CAMERA,
+      );
+
+      const audioPermissionStatus = await this.androidPermissions.checkPermission(
+        this.androidPermissions.PERMISSION.RECORD_AUDIO,
+      );
+
+      console.log('Estado de permisos - Cámara:', cameraPermissionStatus.hasPermission);
+      console.log('Estado de permisos - Audio:', audioPermissionStatus.hasPermission);
+
+      if (!cameraPermissionStatus.hasPermission || !audioPermissionStatus.hasPermission) {
+        // Si no tiene permisos, solicitarlos
+        await this.solicitarPermisos();
+      } else {
+        this.permissionsGranted = true;
+        console.log('Todos los permisos ya estaban concedidos');
+      }
+    } catch (err) {
+      console.error('Error al verificar permisos:', err);
+      await this.mostrarAlertaPermisosDenegados();
+    }
+  }
 
   async solicitarPermisos(): Promise<any> {
     try {
@@ -48,12 +86,49 @@ export class DetalleVideosComponent implements OnDestroy {
         this.androidPermissions.PERMISSION.RECORD_AUDIO,
         this.androidPermissions.PERMISSION.CAMERA,
       ]);
-      console.log('Permisos concedidos:', result);
-      return result;
+      console.log('Resultado de solicitud de permisos:', result);
+
+      // Verificar si todos los permisos fueron concedidos
+      if (result.hasPermission) {
+        this.permissionsGranted = true;
+        console.log('Permisos concedidos correctamente');
+        return result;
+      } else {
+        console.warn('No se concedieron todos los permisos necesarios');
+        await this.mostrarAlertaPermisosDenegados();
+        return result;
+      }
     } catch (err) {
       console.error('Error solicitando permisos:', err);
+      await this.mostrarAlertaPermisosDenegados();
       throw err;
     }
+  }
+
+  async mostrarAlertaPermisosDenegados() {
+    const alert = await this.alertController.create({
+      header: 'Permisos requeridos',
+      message:
+        'Para usar la función de grabación de video, necesitamos acceso a la cámara y al micrófono. Por favor, concede estos permisos en la configuración de tu dispositivo.',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            console.log('Permisos denegados, regresando...');
+            this.back();
+          },
+        },
+        {
+          text: 'Aceptar',
+          handler: () => {
+            this.back();
+          },
+        },
+      ],
+    });
+
+    await alert.present();
   }
 
   back() {
@@ -65,82 +140,107 @@ export class DetalleVideosComponent implements OnDestroy {
   }
 
   async agregarVideo() {
-    if (Capacitor.isNativePlatform()) {
-      try {
-        await this.solicitarPermisos();
-
-        console.log('Iniciando cámara...');
-
-        // Primero activamos la bandera para que se muestre el contenedor
-        this.isPreviewActive = true;
-
-        // Damos tiempo para que el DOM se actualice
-        setTimeout(async () => {
-          const container = document.getElementById('camera-preview-container');
-          console.log('Contenedor de cámara encontrado:', container);
-
-          if (!container) {
-            console.error('No se encontró el contenedor para la cámara');
-            this.isPreviewActive = false;
-            return;
-          }
-
-          // Obtener las dimensiones y posición exactas
-          const rect = container.getBoundingClientRect();
-          console.log(
-            'Dimensiones exactas: ' +
-              JSON.stringify({
-                width: Math.floor(rect.width),
-                height: Math.floor(rect.height),
-                x: Math.floor(rect.left),
-                y: Math.floor(rect.top),
-                containerOffsetTop: container.offsetTop,
-                containerOffsetLeft: container.offsetLeft,
-                windowInnerWidth: window.innerWidth,
-                windowInnerHeight: window.innerHeight,
-              }),
-          );
-
-          try {
-            await CameraPreview.start({
-              position: this.cameraPosition,
-              parent: 'camera-preview-container',
-              className: 'camera-preview',
-              toBack: false,
-              enableHighResolution: true,
-              disableAudio: false,
-              enableZoom: true,
-              // Usar las dimensiones exactas del contenedor
-              width: Math.floor(rect.width - 2),
-              height: Math.floor(rect.height - 2),
-              // Ubicación exacta en la pantalla
-              x: Math.floor(rect.left + 1),
-              y: Math.floor(rect.top + 1),
-            });
-
-            console.log('Cámara iniciada correctamente');
-
-            // Asegurar que el elemento de la cámara tenga los estilos correctos
-            setTimeout(() => {
-              const previewElement = document.querySelector('.camera-preview');
-              if (previewElement) {
-                previewElement.setAttribute(
-                  'style',
-                  'width: 100% !important; height: 100% !important; position: absolute !important; top: 0 !important; left: 0 !important; object-fit: cover !important;',
-                );
-              }
-            }, 200);
-          } catch (error) {
-            console.error('Error al iniciar la cámara:', error);
-            this.isPreviewActive = false;
-          }
-        }, 100);
-      } catch (error) {
-        console.error('Error general al iniciar la cámara:', error);
-      }
-    } else {
+    if (!Capacitor.isNativePlatform()) {
       console.log('Esta función solo está disponible en dispositivos nativos');
+      return;
     }
+
+    // Verificar si ya tenemos permisos
+    if (!this.permissionsGranted) {
+      console.log('No se han concedido los permisos necesarios');
+      await this.verificarPermisos();
+
+      // Si después de verificar aún no tenemos permisos, salir
+      if (!this.permissionsGranted) {
+        console.log('No se pueden iniciar la cámara sin los permisos necesarios');
+        return;
+      }
+    }
+
+    try {
+      console.log('Iniciando cámara...');
+
+      // Primero activamos la bandera para que se muestre el contenedor
+      this.isPreviewActive = true;
+
+      // Damos tiempo para que el DOM se actualice
+      setTimeout(async () => {
+        const container = document.getElementById('camera-preview-container');
+        console.log('Contenedor de cámara encontrado:', container);
+
+        if (!container) {
+          console.error('No se encontró el contenedor para la cámara');
+          this.isPreviewActive = false;
+          return;
+        }
+
+        // Obtener las dimensiones y posición exactas
+        const rect = container.getBoundingClientRect();
+        console.log(
+          'Dimensiones exactas: ' +
+            JSON.stringify({
+              width: Math.floor(rect.width),
+              height: Math.floor(rect.height),
+              x: Math.floor(rect.left),
+              y: Math.floor(rect.top),
+              containerOffsetTop: container.offsetTop,
+              containerOffsetLeft: container.offsetLeft,
+              windowInnerWidth: window.innerWidth,
+              windowInnerHeight: window.innerHeight,
+            }),
+        );
+
+        try {
+          await CameraPreview.start({
+            position: this.cameraPosition,
+            parent: 'camera-preview-container',
+            className: 'camera-preview',
+            toBack: false,
+            enableHighResolution: true,
+            disableAudio: false,
+            enableZoom: true,
+            // Usar las dimensiones exactas del contenedor
+            width: Math.floor(rect.width - 2),
+            height: Math.floor(rect.height - 2),
+            // Ubicación exacta en la pantalla
+            x: Math.floor(rect.left + 1),
+            y: Math.floor(rect.top + 1),
+          });
+
+          console.log('Cámara iniciada correctamente');
+
+          // Asegurar que el elemento de la cámara tenga los estilos correctos
+          setTimeout(() => {
+            const previewElement = document.querySelector('.camera-preview');
+            if (previewElement) {
+              previewElement.setAttribute(
+                'style',
+                'width: 100% !important; height: 100% !important; position: absolute !important; top: 0 !important; left: 0 !important; object-fit: cover !important;',
+              );
+            }
+          }, 200);
+        } catch (error) {
+          console.error('Error al iniciar la cámara:', error);
+          this.isPreviewActive = false;
+          await this.mostrarAlertaErrorCamara(error);
+        }
+      }, 100);
+    } catch (error) {
+      console.error('Error general al iniciar la cámara:', error);
+      await this.mostrarAlertaErrorCamara(error);
+    }
+  }
+
+  async mostrarAlertaErrorCamara(error: any) {
+    const alert = await this.alertController.create({
+      header: 'Error al acceder a la cámara',
+      message:
+        'No se pudo iniciar la cámara. ' +
+        'Por favor, verifica que la aplicación tenga los permisos necesarios y que tu dispositivo soporte esta función.',
+      buttons: ['OK'],
+    });
+
+    await alert.present();
   }
 
   async startRecording() {

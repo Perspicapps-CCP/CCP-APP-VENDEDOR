@@ -23,6 +23,7 @@ const config: CapacitorConfig = {
   android: {
     backgroundColor: '#3880ff',
     allowMixedContent: true,
+    appendUserAgent: 'HighMemoryApp',
   },
 };
 
