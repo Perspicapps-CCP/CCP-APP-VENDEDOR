@@ -11,8 +11,9 @@ import {
   IonTitle,
   IonToolbar,
   ViewWillEnter,
+  ViewWillLeave,
 } from '@ionic/angular/standalone';
-import { map, Observable, startWith, tap } from 'rxjs';
+import { map, Observable, startWith, Subscription, tap } from 'rxjs';
 import { Cliente } from 'src/app/modules/clientes/interfaces/cliente.interface';
 import { ClientesService } from 'src/app/modules/clientes/servicios/clientes.service';
 import { sharedImports } from 'src/app/shared/otros/shared-imports';
@@ -22,6 +23,7 @@ import { Producto } from '../../interfaces/productos.interface';
 import { CatalogoService } from '../../servicios/catalogo.service';
 import { CarritoComprasService } from '../../servicios/carrito-compras.service';
 import { OnlyNumbersDirective } from 'src/app/shared/directivas/only-numbers.directive';
+import { InventorySocketServiceService } from '../../servicios/inventory-socket-service.service';
 
 @Component({
   selector: 'app-catalogo-productos',
@@ -39,10 +41,9 @@ import { OnlyNumbersDirective } from 'src/app/shared/directivas/only-numbers.dir
     MatCard,
     ReactiveFormsModule,
     HighlightTextPipe,
-    OnlyNumbersDirective,
   ],
 })
-export class CatalogoProductosComponent implements ViewWillEnter {
+export class CatalogoProductosComponent implements ViewWillEnter, ViewWillLeave {
   clienteSeleccionado?: Cliente;
 
   // Variables para el catálogo de productos
@@ -51,6 +52,7 @@ export class CatalogoProductosComponent implements ViewWillEnter {
   filterProductos$?: Observable<Producto[]>;
 
   carritoCount?: Observable<string>;
+  private subscriptionChangeInventory?: Subscription;
 
   constructor(
     private catalogoService: CatalogoService,
@@ -58,11 +60,28 @@ export class CatalogoProductosComponent implements ViewWillEnter {
     private router: Router,
     private dinamicSearchService: DinamicSearchService,
     private carritoComprasService: CarritoComprasService,
+    private inventorySocketServiceService: InventorySocketServiceService,
   ) {}
 
   ionViewWillEnter() {
     this.obtenerInfoCliente();
     this.obtenerProductos();
+    this.connectionChangeInventory();
+  }
+
+  connectionChangeInventory() {
+    this.subscriptionChangeInventory =
+      this.inventorySocketServiceService.inventoryChange$.subscribe(event => {
+        if (event) {
+          const { product_id, quantity } = event;
+          const indexProduct = this.productos.findIndex(
+            producto => producto.product_id === product_id,
+          );
+          if (indexProduct !== -1) {
+            this.productos[indexProduct].quantity = quantity;
+          }
+        }
+      });
   }
 
   obtenerProductos() {
@@ -75,9 +94,6 @@ export class CatalogoProductosComponent implements ViewWillEnter {
   filterProductos() {
     this.filterProductos$ = this.formBusquedaProductos.valueChanges.pipe(
       startWith(''),
-      tap(value => {
-        console.log('value', value);
-      }),
       map(name => this.buscar(name || '')),
     );
   }
@@ -121,5 +137,11 @@ export class CatalogoProductosComponent implements ViewWillEnter {
   agregarAlCarrito(producto: Producto) {
     this.carritoComprasService.addToCurrentCart(producto);
     producto.quantity_selected = 0;
+  }
+
+  ionViewWillLeave() {
+    if (this.subscriptionChangeInventory) {
+      this.subscriptionChangeInventory.unsubscribe();
+    }
   }
 }

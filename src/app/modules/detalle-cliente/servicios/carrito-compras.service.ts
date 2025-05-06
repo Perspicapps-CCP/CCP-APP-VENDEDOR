@@ -19,6 +19,10 @@ export class CarritoComprasService {
   // BehaviorSubject para la lista de clientes con carritos
   private clientsWithCarts = new BehaviorSubject<string[]>([]);
 
+  // BehaviorSubject para el cambio de disponibilidad del producto
+  private productAvailabilityChanged = new BehaviorSubject<string | null>(null);
+  productAvailabilityChanged$ = this.productAvailabilityChanged.asObservable();
+
   private storageReady = false;
 
   constructor(
@@ -133,7 +137,6 @@ export class CarritoComprasService {
   //actualizar un producto en el carrito actual
   updateProductQuantity(productId: string, quantity: number): void {
     if (!this.currentClientId) return;
-
     const clientCart = this.clientCarts.get(this.currentClientId);
     if (!clientCart) return;
 
@@ -304,33 +307,34 @@ export class CarritoComprasService {
     this.clientCarts.forEach(clientCart => {
       // Buscar el producto en el carrito actual
       const productIndex = clientCart.items.findIndex(item => item.product_id === productId);
-
       // Si el producto existe en este carrito
       if (productIndex >= 0) {
         const product = clientCart.items[productIndex];
-
+        // Guardar la cantidad anterior para verificar si hubo cambio
+        const previousQuantity = product.quantity;
         // Actualizar la cantidad disponible
         product.quantity = newAvailableQuantity;
-
         // Verificar si la cantidad seleccionada excede la nueva cantidad disponible
         if (product.quantity_selected > newAvailableQuantity) {
           // Ajustar la cantidad seleccionada al máximo disponible
           product.quantity_selected = newAvailableQuantity;
           updatedQuantities++;
         }
-
         // Actualizar la fecha de modificación del carrito
         clientCart.lastUpdated = new Date();
         updatedCarts++;
+
+        // Si la cantidad disponible cambió, notificar a los componentes
+        if (previousQuantity !== newAvailableQuantity) {
+          this.productAvailabilityChanged.next(productId);
+        }
       }
     });
 
-    // Si el carrito actual está seleccionado, actualizar los contadores
     if (this.currentClientId) {
       this.updateCartStatus();
     }
 
-    // Guardar los cambios en el almacenamiento local
     this.saveAllCarts();
   }
 }

@@ -305,7 +305,6 @@ export class DetalleRutaComponent implements OnInit {
     directionsService.route(request, (result, status) => {
       if (status === google.maps.DirectionsStatus.OK) {
         this.directionsResults = result;
-        console.log('Ruta calculada con éxito', result);
 
         // Extraer las coordenadas de la ruta calculada
         if (result) {
@@ -370,8 +369,6 @@ export class DetalleRutaComponent implements OnInit {
       latitude: lastLeg.end_location.lat().toString(),
       longitude: lastLeg.end_location.lng().toString(),
     });
-
-    console.log('Coordenadas extraídas de la ruta:', this.routeCoordinates);
   }
 
   fitBounds() {
@@ -415,8 +412,6 @@ export class DetalleRutaComponent implements OnInit {
       else if (maxDiff > 0.5) this.zoom = 9;
       else if (maxDiff > 0.2) this.zoom = 10;
       else this.zoom = 11;
-
-      console.log('Zoom calculado:', this.zoom);
     } catch (error) {
       console.error('Error al ajustar los límites del mapa:', error);
       // En caso de error, establecer un zoom seguro por defecto

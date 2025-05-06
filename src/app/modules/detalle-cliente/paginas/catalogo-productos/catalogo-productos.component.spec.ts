@@ -190,9 +190,6 @@ describe('CatalogoProductosComponent', () => {
     spyOn(carritoComprasService, 'getCartItemCount').and.callThrough();
     spyOn(carritoComprasService, 'addToCurrentCart').and.callThrough();
 
-    // Espiamos console.log
-    spyOn(console, 'log').and.callThrough();
-
     fixture.detectChanges();
   });
 

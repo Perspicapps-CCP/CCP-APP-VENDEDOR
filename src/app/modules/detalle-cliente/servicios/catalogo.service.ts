@@ -22,7 +22,7 @@ export class CatalogoService {
   }
 
   obtenerProductos() {
-    return this.http.get<Producto[]>(`${this.apiUrl}/inventory/stock/products`).pipe(
+    return this.http.get<Producto[]>(`${this.apiUrl}/inventory/stock/catalog/`).pipe(
       map((productos: Producto[]) => {
         return productos.map(producto => {
           const precio = this.localCurrencyPipe.transform(producto.price);

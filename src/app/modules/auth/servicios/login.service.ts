@@ -19,9 +19,6 @@ export class LoginService {
   ) {}
 
   iniciarSesion(username: string, password: string) {
-    console.log('AUTH-DEBUG: Iniciando petición a ' + this.apiUrl);
-    console.log('AUTH-DEBUG: Datos enviados', JSON.stringify({ username, password }));
-
     return this.http.post<Login>(`${this.apiUrl}/api/v1/users/login`, { username, password }).pipe(
       timeout(30000),
       tap(res => {

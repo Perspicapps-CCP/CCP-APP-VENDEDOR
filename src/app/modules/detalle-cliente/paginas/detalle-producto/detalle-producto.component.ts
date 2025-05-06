@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
   IonButton,
@@ -16,9 +16,10 @@ import { Producto } from '../../interfaces/productos.interface';
 import { Cliente } from 'src/app/modules/clientes/interfaces/cliente.interface';
 import { Router } from '@angular/router';
 import { VisorImagenesDialogComponent } from 'src/app/shared/componentes/visor-imagenes-dialog/visor-imagenes-dialog.component';
-import { map, Observable } from 'rxjs';
+import { map, Observable, Subscription } from 'rxjs';
 import { CarritoComprasService } from '../../servicios/carrito-compras.service';
 import { OnlyNumbersDirective } from 'src/app/shared/directivas/only-numbers.directive';
+import { InventorySocketServiceService } from '../../servicios/inventory-socket-service.service';
 
 @Component({
   selector: 'app-detalle-producto',
@@ -37,16 +38,18 @@ import { OnlyNumbersDirective } from 'src/app/shared/directivas/only-numbers.dir
     OnlyNumbersDirective,
   ],
 })
-export class DetalleProductoComponent implements ViewWillEnter {
+export class DetalleProductoComponent implements ViewWillEnter, OnDestroy {
   productoSeleccionado?: Producto;
   clienteSeleccionado?: Cliente;
   carritoCount?: Observable<string>;
+  private subscriptionChangeInventory?: Subscription;
 
   constructor(
     private router: Router,
     private clientesService: ClientesService,
     private catalogoService: CatalogoService,
     private carritoComprasService: CarritoComprasService,
+    private inventorySocketServiceService: InventorySocketServiceService,
   ) {}
 
   ionViewWillEnter() {
@@ -81,10 +84,35 @@ export class DetalleProductoComponent implements ViewWillEnter {
     window.history.back();
   }
 
+  connectionChangeInventory() {
+    this.subscriptionChangeInventory =
+      this.inventorySocketServiceService.inventoryChange$.subscribe(event => {
+        if (event) {
+          const { product_id, quantity } = event;
+          if (this.productoSeleccionado?.product_id === product_id) {
+            this.productoSeleccionado.quantity = quantity;
+          }
+        }
+      });
+  }
+
   agregarAlCarrito() {
     if (this.productoSeleccionado) {
       this.carritoComprasService.addToCurrentCart(this.productoSeleccionado);
       this.productoSeleccionado.quantity_selected = 0;
+    }
+  }
+
+  onChangeCantidad(producto: Producto) {
+    this.carritoComprasService.updateProductQuantity(
+      producto.product_id!,
+      producto.quantity_selected!,
+    );
+  }
+
+  ngOnDestroy() {
+    if (this.subscriptionChangeInventory) {
+      this.subscriptionChangeInventory.unsubscribe();
     }
   }
 }

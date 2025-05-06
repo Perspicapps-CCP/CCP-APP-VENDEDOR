@@ -10,14 +10,15 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
+import { Observable } from 'rxjs';
 import { Cliente } from 'src/app/modules/clientes/interfaces/cliente.interface';
 import { ClientesService } from 'src/app/modules/clientes/servicios/clientes.service';
 import { sharedImports } from 'src/app/shared/otros/shared-imports';
-import { CarritoComprasService } from '../../servicios/carrito-compras.service';
-import { Observable } from 'rxjs';
-import { DetalleClienteService } from '../../servicios/detalle-cliente.service';
-import { Sales } from '../../interfaces/ventas.interface';
 import { LocalDatePipe } from 'src/app/shared/pipes/local-date.pipe';
+import { Sales } from '../../interfaces/ventas.interface';
+import { CarritoComprasService } from '../../servicios/carrito-compras.service';
+import { DetalleClienteService } from '../../servicios/detalle-cliente.service';
+import { InventorySocketServiceService } from '../../servicios/inventory-socket-service.service';
 
 @Component({
   selector: 'app-detalle-cliente',
@@ -46,6 +47,7 @@ export class DetalleClienteComponent implements OnInit {
     private router: Router,
     private carritoComprasService: CarritoComprasService,
     private detalleClienteService: DetalleClienteService,
+    private _: InventorySocketServiceService,
   ) {}
 
   ngOnInit() {
