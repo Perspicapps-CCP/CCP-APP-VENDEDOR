@@ -84,13 +84,6 @@ describe('Date Validators', () => {
 
       formGroup.get('start_date')?.setValue(todayFormatted);
       formGroup.get('end_date')?.setValue(yesterdayFormatted);
-
-      // Simplemente documentamos el comportamiento real
-      const isValid = formGroup.valid;
-      const errors = formGroup.errors;
-      console.log(`Cuando end_date < start_date: isValid=${isValid}, errors=`, errors);
-
-      // Aquí no hacemos expectativas - solo documentamos
     });
   });
 

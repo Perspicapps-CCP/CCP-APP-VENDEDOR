@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCard } from '@angular/material/card';
 import { Router } from '@angular/router';
@@ -12,12 +12,14 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
+import { Subscription } from 'rxjs';
 import { Cliente } from 'src/app/modules/clientes/interfaces/cliente.interface';
 import { ClientesService } from 'src/app/modules/clientes/servicios/clientes.service';
 import { sharedImports } from 'src/app/shared/otros/shared-imports';
-import { CarritoComprasService } from '../../servicios/carrito-compras.service';
-import { Producto } from '../../interfaces/productos.interface';
 import { LocalCurrencyPipe } from 'src/app/shared/pipes/local-currency.pipe';
+import { Producto } from '../../interfaces/productos.interface';
+import { CarritoComprasService } from '../../servicios/carrito-compras.service';
+import { OnlyNumbersDirective } from 'src/app/shared/directivas/only-numbers.directive';
 
 @Component({
   selector: 'app-carrito-compras',
@@ -37,9 +39,10 @@ import { LocalCurrencyPipe } from 'src/app/shared/pipes/local-currency.pipe';
     LocalCurrencyPipe,
   ],
 })
-export class CarritoComprasComponent implements ViewWillEnter {
+export class CarritoComprasComponent implements ViewWillEnter, OnDestroy {
   clienteSeleccionado?: Cliente;
   productosCarritoCompras: Producto[] = [];
+  private subscription?: Subscription;
 
   constructor(
     private clientesService: ClientesService,
@@ -55,9 +58,20 @@ export class CarritoComprasComponent implements ViewWillEnter {
     if (this.clientesService.clienteSeleccionado) {
       this.clienteSeleccionado = this.clientesService.clienteSeleccionado;
       this.obtenerProductosCarritoCompras();
+      this.subscribeToInventoryChanges();
     } else {
       this.router.navigate(['/home']);
     }
+  }
+
+  subscribeToInventoryChanges() {
+    this.subscription = this.carritoComprasService.productAvailabilityChanged$.subscribe(
+      productId => {
+        if (productId !== null) {
+          this.obtenerProductosCarritoCompras();
+        }
+      },
+    );
   }
 
   obtenerProductosCarritoCompras() {
@@ -93,5 +107,11 @@ export class CarritoComprasComponent implements ViewWillEnter {
     return this.productosCarritoCompras.some(producto => {
       return producto.quantity_selected === 0 || producto.quantity_selected > producto.quantity;
     });
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 }

@@ -54,7 +54,12 @@
               class="form-control"
               [placeholder]="'DETALLE_PRODUCTO.FORM.QUANTITY' | translate"
               aria-describedby="cantidad-producto"
-              [(ngModel)]="productoSeleccionado.quantity_selected" />
+              [(ngModel)]="productoSeleccionado.quantity_selected"
+              (change)="onChangeCantidad(productoSeleccionado)"
+              min="0"
+              [max]="productoSeleccionado.quantity"
+              appNumbersOnly />
+
             <span class="input-group-text"
               >{{ productoSeleccionado.quantity < 100 ? productoSeleccionado.quantity : '+99' }}
               {{ 'DETALLE_PRODUCTO.AVALIABLE' | translate }}</span

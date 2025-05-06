@@ -117,7 +117,7 @@ describe('CatalogoService', () => {
     });
 
     // Configuramos la respuesta mock para la solicitud HTTP
-    const req = httpMock.expectOne(`${environment.apiUrlCCP}/inventory/stock/products`);
+    const req = httpMock.expectOne(`${environment.apiUrlCCP}/inventory/stock/catalog/`);
     expect(req.request.method).toBe('GET');
     req.flush(mockProductos);
   });
@@ -137,7 +137,7 @@ describe('CatalogoService', () => {
     });
 
     // Configuramos la respuesta mock
-    const req = httpMock.expectOne(`${environment.apiUrlCCP}/inventory/stock/products`);
+    const req = httpMock.expectOne(`${environment.apiUrlCCP}/inventory/stock/catalog/`);
     req.flush(mockProductos);
   });
 
@@ -166,7 +166,7 @@ describe('CatalogoService', () => {
     });
 
     // Configuramos un error en la respuesta HTTP
-    const req = httpMock.expectOne(`${environment.apiUrlCCP}/inventory/stock/products`);
+    const req = httpMock.expectOne(`${environment.apiUrlCCP}/inventory/stock/catalog/`);
     req.flush('Error loading products', {
       status: 500,
       statusText: 'Server Error',
