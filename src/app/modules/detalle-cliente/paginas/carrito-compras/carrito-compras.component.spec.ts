@@ -14,7 +14,7 @@ import {
   TranslateService,
   TranslateStore,
 } from '@ngx-translate/core';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, Subject, of } from 'rxjs';
 import { CarritoComprasService } from '../../servicios/carrito-compras.service';
 import { Storage } from '@ionic/storage-angular';
 import { Producto } from '../../interfaces/productos.interface';
@@ -135,8 +135,11 @@ const mockProductosCarrito: Producto[] = [
   },
 ];
 
-// Mock para CarritoComprasService
+// Mock para CarritoComprasService - Ahora con productAvailabilityChanged$
 class MockCarritoComprasService {
+  // Agregar el Subject para simular cambios en el inventario
+  productAvailabilityChanged$ = new Subject<string | null>();
+
   getCurrentCart() {
     return [...mockProductosCarrito];
   }
@@ -375,5 +378,35 @@ describe('CarritoComprasComponent', () => {
     expect(() => {
       component.realizarPedido();
     }).not.toThrow();
+  });
+
+  // Nueva prueba para verificar la suscripción a cambios de inventario
+  it('should update cart when product availability changes', () => {
+    // Espiamos el método
+    spyOn(component, 'obtenerProductosCarritoCompras').and.callThrough();
+
+    // Iniciamos el componente
+    component.obtenerInfoCliente();
+
+    // Verificamos que inicialmente se llamó una vez
+    expect(component.obtenerProductosCarritoCompras).toHaveBeenCalledTimes(1);
+
+    // Simulamos un cambio en la disponibilidad
+    carritoComprasService.productAvailabilityChanged$.next('P001');
+
+    // Verificamos que se actualizó el carrito
+    expect(component.obtenerProductosCarritoCompras).toHaveBeenCalledTimes(2);
+  });
+
+  it('should unsubscribe on destroy', () => {
+    // Espiamos el método unsubscribe
+    const subscriptionSpy = jasmine.createSpyObj('Subscription', ['unsubscribe']);
+    component['subscription'] = subscriptionSpy;
+
+    // Llamamos al método ngOnDestroy
+    component.ngOnDestroy();
+
+    // Verificamos que se llamó unsubscribe
+    expect(subscriptionSpy.unsubscribe).toHaveBeenCalled();
   });
 });
