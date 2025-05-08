@@ -130,6 +130,28 @@
     "BUTTON": {
       "ADD_VIDEO": "Add video",
       "SEE_VIDEO": "See video"
+    },
+    "CREAR_VIDEO": {
+      "TITLE": "Create video",
+      "FORM": {
+        "VIDEO_TITLE": "Enter a video title",
+        "VIDEO_DESCRIPTION": "Enter a video description",
+        "VIDEO_UPLOAD": "Upload",
+        "NOT_VIDEO": "No video to upload",
+        "VIDEO_CHARGED": "video charged"
+      },
+      "FORM_ERRORS": {
+        "FIELD_REQUIRED": "This field is required",
+        "ALL_FILES_MUST_BE_VIDEOS": "All files must be videos"
+      },
+      "BUTTON": {
+        "SAVE": "Save",
+        "CANCEL": "Cancel"
+      },
+      "TOAST": {
+        "SUCCESS": "Video created successfully",
+        "ERROR": "Error creating video"
+      }
     }
   },
   "DETALLE_VIDEO": {

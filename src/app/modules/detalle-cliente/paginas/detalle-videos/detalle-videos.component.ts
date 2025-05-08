@@ -8,6 +8,7 @@ import {
   IonTitle,
   IonToolbar,
   ViewWillEnter,
+  IonModal,
 } from '@ionic/angular/standalone';
 import { sharedImports } from 'src/app/shared/otros/shared-imports';
 import { Video } from '../../interfaces/videos.interface';
@@ -16,11 +17,14 @@ import { MatCard } from '@angular/material/card';
 import { Router } from '@angular/router';
 import { ClientesService } from 'src/app/modules/clientes/servicios/clientes.service';
 import { Cliente } from 'src/app/modules/clientes/interfaces/cliente.interface';
+import { RegistrarVideoComponent } from '../../componentes/registrar-video/registrar-video.component';
+import { OverlayEventDetail } from '@ionic/core';
 @Component({
   selector: 'app-detalle-videos',
   templateUrl: './detalle-videos.component.html',
   styleUrls: ['./detalle-videos.component.scss'],
   imports: [
+    IonModal,
     sharedImports,
     IonButton,
     IonTitle,
@@ -30,6 +34,7 @@ import { Cliente } from 'src/app/modules/clientes/interfaces/cliente.interface';
     IonHeader,
     CommonModule,
     MatCard,
+    RegistrarVideoComponent,
   ],
 })
 export class DetalleVideosComponent implements ViewWillEnter {
@@ -72,5 +77,9 @@ export class DetalleVideosComponent implements ViewWillEnter {
     window.history.back();
   }
 
-  agregarVideo() {}
+  onWillDismiss(event: CustomEvent<OverlayEventDetail>) {
+    if (event.detail.role === 'confirm') {
+      this.obtenerVideos();
+    }
+  }
 }

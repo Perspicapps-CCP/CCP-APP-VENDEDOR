@@ -1,3 +1,87 @@
-<p>
-  registrar-video works!
-</p>
+<div class="modal-container">
+  <div class="modal-header">
+    <span>{{ 'VISITAS.CREAR_VISITA.TITLE' | translate }}</span>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="closeModal.emit(false)"></button>
+  </div>
+  <div>
+    <form
+      [formGroup]="videoForm"
+      (ngSubmit)="crearVideo()"
+      class="flex flex-col w-full gap-[0.25rem]">
+      <div class="w-full min-h-[3.9375rem]">
+        <div class="input-group">
+          <button
+            class="btn btn-outline-secondary input-group-text"
+            type="button"
+            id="button-upload-video"
+            (click)="inputFile.click()">
+            {{ 'DETALLE_VIDEOS.CREAR_VIDEO.FORM.VIDEO_UPLOAD' | translate }}
+          </button>
+          <input
+            type="file"
+            class="hidden"
+            #inputFile
+            (change)="onFileSelected($event)"
+            accept="video/*" />
+
+          <input
+            (click)="inputFile.click()"
+            class="form-control cursor-pointer"
+            type="text"
+            id="videos_text"
+            name="videos_text"
+            [ngClass]="{ 'is-invalid': isInvalid('videos_text') }"
+            readonly
+            placeholder="{{ 'DETALLE_VIDEOS.CREAR_VIDEO.FORM.NOT_VIDEO' | translate }}"
+            formControlName="videos_text" />
+          <div class="invalid-feedback">
+            {{ getErrorMessage('videos_text').key | translate }}
+          </div>
+        </div>
+      </div>
+
+      <div class="w-full min-h-[3.9375rem]">
+        <input
+          id="title-video-input"
+          type="text"
+          class="form-control"
+          formControlName="title"
+          placeholder="{{ 'DETALLE_VIDEOS.CREAR_VIDEO.FORM.VIDEO_TITLE' | translate }}"
+          [ngClass]="{ 'is-invalid': isInvalid('title') }" />
+        <div class="invalid-feedback">
+          {{ getErrorMessage('title').key | translate }}
+        </div>
+      </div>
+
+      <div class="w-full min-h-[6.9375rem]">
+        <textarea
+          class="form-control"
+          id="description"
+          formControlName="description"
+          rows="3"
+          placeholder="{{ 'DETALLE_VIDEOS.CREAR_VIDEO.FORM.VIDEO_DESCRIPTION' | translate }}"
+          [ngClass]="{ 'is-invalid': isInvalid('description') }"></textarea>
+        <div class="invalid-feedback">
+          {{ getErrorMessage('description').key | translate }}
+        </div>
+      </div>
+
+      <div class="w-full flex gap-[0.50rem] justify-end">
+        <button
+          type="button"
+          class="btn btn btn-outline-secondary"
+          (click)="closeModal.emit(false)">
+          {{ 'DETALLE_VIDEOS.CREAR_VIDEO.BUTTON.CANCEL' | translate }}
+        </button>
+
+        <button type="submit" class="btn btn btn-outline-primary" [disabled]="!videoForm.valid">
+          {{ 'DETALLE_VIDEOS.CREAR_VIDEO.BUTTON.SAVE' | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
