@@ -131,5 +131,9 @@
       "ADD_VIDEO": "Add video",
       "SEE_VIDEO": "See video"
     }
+  },
+  "DETALLE_VIDEO": {
+    "DESCRIPTION": "Description",
+    "RECOMENDATIONS": "Recommendations"
   }
 }

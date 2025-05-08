@@ -6,7 +6,7 @@
           <mat-icon style="color: var(--bs-gray-600)" slot="icon-only">arrow_back</mat-icon>
         </ion-button>
       </ion-buttons>
-      <ion-title>{{ 'DETALLE_PEDIDO.TITLE' | translate }}</ion-title>
+      <ion-title>{{ 'DETALLE_VIDEOS.TITLE' | translate }}</ion-title>
       <ion-buttons slot="end">
         <ion-button (click)="agregarVideo()">
           <mat-icon
@@ -20,6 +20,30 @@
     </ion-toolbar>
   </ion-header>
   <ion-content class="ion-no-padding">
-    <div class="flex flex-col w-full h-full p-[0.75rem] gap-4"></div>
+    <div class="flex flex-col w-full h-full p-[0.75rem] gap-4">
+      @for (video of videos; track video.id) {
+        <mat-card appearance="raised" class="card-content">
+          <div class="header-card">
+            <span>{{ video.title }}</span>
+          </div>
+          <div class="content-card">
+            <div>
+              <span class="text-sm font-bold text-gray-300">&nbsp;{{ video.status }}</span>
+            </div>
+            <div>
+              <span>{{ video.description }}</span>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="btn btn-dark-primary"
+                (click)="navegarADetalleVideo(video)">
+                {{ 'DETALLE_VIDEOS.BUTTON.SEE_VIDEO' | translate }}
+              </button>
+            </div>
+          </div>
+        </mat-card>
+      }
+    </div>
   </ion-content>
 </div>
