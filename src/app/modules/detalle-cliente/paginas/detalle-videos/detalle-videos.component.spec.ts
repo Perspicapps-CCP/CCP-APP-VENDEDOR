@@ -89,17 +89,4 @@ describe('DetalleVideosComponent', () => {
     // Verificamos que se llamó window.history.back
     expect(window.history.back).toHaveBeenCalled();
   });
-
-  it('should have agregarVideo method defined', () => {
-    // Verificamos que el método existe
-    expect(component.agregarVideo).toBeDefined();
-
-    // Verificamos que podemos llamarlo sin errores
-    expect(() => {
-      component.agregarVideo();
-    }).not.toThrow();
-  });
-
-  // Puedes agregar más pruebas a medida que implementes la funcionalidad
-  // de agregarVideo y otras funciones
 });

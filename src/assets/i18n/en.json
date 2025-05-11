@@ -103,8 +103,16 @@
     "TITLE": "Shopping Cart",
     "BUTTON": {
       "ORDER": "Place order",
-      "REMOVE_PRODUCT": "Remove product"
+      "REMOVE_PRODUCT": "Remove product",
+      "CANCEL": "No",
+      "CONFIRM": "Yes"
     },
+    "CONFIRM_TITLE": "confirm",
+    "CONFIRM_DELETE_MESSAGE": "Are you sure you want to remove this product from the cart?",
+    "PRODUCT_DELETED": "Product removed",
+    "CONFIRM_PEDIDO_MESSAGE": "Are you sure you want to place the order?",
+    "CONFIRM_PEDIDO_SUCCESS": "Order placed successfully",
+    "CONFIRM_PEDIDO_ERROR": "Error placing order",
     "UNIT_PRODUCT": "Unit",
     "AVALIABLE": "Available",
     "FORM": {

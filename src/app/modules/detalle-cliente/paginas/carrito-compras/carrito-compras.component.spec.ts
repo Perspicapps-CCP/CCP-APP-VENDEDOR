@@ -294,7 +294,7 @@ describe('CarritoComprasComponent', () => {
     spyOn(component, 'obtenerProductosCarritoCompras').and.callThrough();
 
     // Llamamos al método para eliminar un producto
-    component.eliminarProducto(mockProductosCarrito[0]);
+    component.eliminarProducto();
 
     // Verificamos que se llamó al método del servicio con el ID correcto
     expect(carritoComprasService.removeFromCurrentCart).toHaveBeenCalledWith('P001');
