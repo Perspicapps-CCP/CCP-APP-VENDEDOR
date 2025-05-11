@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController } from '@angular/common/http/testing';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CrearPedidoService } from './crear-pedido.service';
 import { CrearPedido } from '../interfaces/crearPedido.interface';
 import { environment } from 'src/environments/environment';
@@ -11,11 +12,7 @@ describe('CrearPedidoService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        CrearPedidoService,
-        provideHttpClient(withInterceptorsFromDi()),
-        { provide: HttpTestingController, useClass: HttpTestingController },
-      ],
+      providers: [CrearPedidoService, provideHttpClient(), provideHttpClientTesting()],
     });
 
     service = TestBed.inject(CrearPedidoService);
