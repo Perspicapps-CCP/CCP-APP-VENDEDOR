@@ -104,7 +104,7 @@ describe('DetalleClienteService', () => {
     });
 
     // Esperamos y respondemos con el mock
-    const req = httpMock.expectOne(`${apiUrl}/api/v1/sales/sale/${clientId}`);
+    const req = httpMock.expectOne(`${apiUrl}/api/v1/sales/sales/?client_id=${clientId}`);
     expect(req.request.method).toBe('GET');
     req.flush(mockSales);
 

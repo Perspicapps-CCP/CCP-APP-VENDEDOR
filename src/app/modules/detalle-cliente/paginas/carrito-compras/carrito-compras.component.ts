@@ -119,7 +119,7 @@ export class CarritoComprasComponent implements ViewWillEnter, OnDestroy {
 
   realizarPedido() {
     const pedido: CrearPedido = {
-      client_id: this.clienteSeleccionado!.customer_id,
+      client_id: this.clienteSeleccionado!.client?.id!,
       items: this.productosCarritoCompras.map(producto => ({
         product_id: producto.product_id!,
         quantity: producto.quantity_selected,
