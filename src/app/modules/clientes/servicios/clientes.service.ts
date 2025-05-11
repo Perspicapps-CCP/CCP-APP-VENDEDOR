@@ -17,12 +17,13 @@ export class ClientesService {
   obtenerClientes(): Observable<Cliente[]> {
     return this.http.get<ClienteResponse[]>(`${this.apiUrl}/api/v1/sales/sellers/clients/`).pipe(
       map((clientesResponse: any) => {
+        console.log('ClienteResponse', clientesResponse);
         const clientInfo = clientesResponse.map((clienteResp: ClienteResponse) => {
           return {
             customer_id: clienteResp.id,
             customer_name: clienteResp.client.full_name,
             identification: clienteResp.client.identification,
-            addressString: clienteResp.client.address.line,
+            addressString: clienteResp.client.address?.line,
             phone: clienteResp.client.phone,
             customer_image: clienteResp.client_thumbnail,
             isRecentVisit: clienteResp.was_visited_recently,

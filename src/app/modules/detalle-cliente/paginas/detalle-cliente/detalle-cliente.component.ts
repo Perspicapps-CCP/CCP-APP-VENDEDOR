@@ -83,7 +83,7 @@ export class DetalleClienteComponent implements OnInit {
 
   obtenerPedidosCliente() {
     this.detalleClienteService
-      .obtenerVentasPorCliente(this.clienteSeleccionado!.customer_id)
+      .obtenerVentasPorCliente(this.clienteSeleccionado!.client!.id)
       .subscribe(response => {
         this.pedidosCliente = response;
       });

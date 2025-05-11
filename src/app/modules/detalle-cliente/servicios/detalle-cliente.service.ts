@@ -12,6 +12,6 @@ export class DetalleClienteService {
   constructor(private http: HttpClient) {}
 
   obtenerVentasPorCliente(clienteId: string): Observable<Sales[]> {
-    return this.http.get<Sales[]>(`${this.apiUrl}/api/v1/sales/sales/`);
+    return this.http.get<Sales[]>(`${this.apiUrl}/api/v1/sales/sales/?client_id=${clienteId}`);
   }
 }

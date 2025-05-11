@@ -1,0 +1,33 @@
+.card-content {
+  background-color: white;
+  .header-card {
+    color: white;
+    border-radius: 12px 12px 0px 0px;
+    background-color: var(--primary-900);
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+  }
+  .content-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    padding: 0.25rem 0.75rem;
+    font-size: 12px;
+    font-weight: normal;
+  }
+}
+
+ion-modal#modal-videos {
+  --height: auto;
+  --width: 85%;
+  --border-radius: 16px;
+  --box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+ion-modal#modal-videos::part(backdrop) {
+  background: rgba(0, 0, 0);
+  opacity: 1;
+}

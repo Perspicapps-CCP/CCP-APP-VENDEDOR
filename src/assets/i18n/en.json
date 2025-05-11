@@ -72,7 +72,8 @@
       "ORDER_DETAIL": "See order"
     },
     "CLIENT_ORDERS": "Orders",
-    "ARTICLES": "Articles"
+    "ARTICLES": "Articles",
+    "STATUS_DEFAULT": "CREATED"
   },
   "CATALOGO_PRODUCTOS": {
     "TITLE": "Catalog Products",
@@ -103,8 +104,16 @@
     "TITLE": "Shopping Cart",
     "BUTTON": {
       "ORDER": "Place order",
-      "REMOVE_PRODUCT": "Remove product"
+      "REMOVE_PRODUCT": "Remove product",
+      "CANCEL": "No",
+      "CONFIRM": "Yes"
     },
+    "CONFIRM_TITLE": "confirm",
+    "CONFIRM_DELETE_MESSAGE": "Are you sure you want to remove this product from the cart?",
+    "PRODUCT_DELETED": "Product removed",
+    "CONFIRM_PEDIDO_MESSAGE": "Are you sure you want to place the order?",
+    "CONFIRM_PEDIDO_SUCCESS": "Order placed successfully",
+    "CONFIRM_PEDIDO_ERROR": "Error placing order",
     "UNIT_PRODUCT": "Unit",
     "AVALIABLE": "Available",
     "FORM": {
@@ -130,6 +139,32 @@
     "BUTTON": {
       "ADD_VIDEO": "Add video",
       "SEE_VIDEO": "See video"
+    },
+    "CREAR_VIDEO": {
+      "TITLE": "Create video",
+      "FORM": {
+        "VIDEO_TITLE": "Enter a video title",
+        "VIDEO_DESCRIPTION": "Enter a video description",
+        "VIDEO_UPLOAD": "Upload",
+        "NOT_VIDEO": "No video to upload",
+        "VIDEO_CHARGED": "video charged"
+      },
+      "FORM_ERRORS": {
+        "FIELD_REQUIRED": "This field is required",
+        "ALL_FILES_MUST_BE_VIDEOS": "All files must be videos"
+      },
+      "BUTTON": {
+        "SAVE": "Save",
+        "CANCEL": "Cancel"
+      },
+      "TOAST": {
+        "SUCCESS": "Video created successfully",
+        "ERROR": "Error creating video"
+      }
     }
+  },
+  "DETALLE_VIDEO": {
+    "DESCRIPTION": "Description",
+    "RECOMENDATIONS": "Recommendations"
   }
 }

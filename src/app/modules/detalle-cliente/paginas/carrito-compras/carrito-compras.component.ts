@@ -9,6 +9,7 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
+  IonModal,
   IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
@@ -20,6 +21,10 @@ import { LocalCurrencyPipe } from 'src/app/shared/pipes/local-currency.pipe';
 import { Producto } from '../../interfaces/productos.interface';
 import { CarritoComprasService } from '../../servicios/carrito-compras.service';
 import { OnlyNumbersDirective } from 'src/app/shared/directivas/only-numbers.directive';
+import { TranslateService } from '@ngx-translate/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { CrearPedido } from '../../interfaces/crearPedido.interface';
+import { CrearPedidoService } from '../../servicios/crear-pedido.service';
 
 @Component({
   selector: 'app-carrito-compras',
@@ -37,17 +42,22 @@ import { OnlyNumbersDirective } from 'src/app/shared/directivas/only-numbers.dir
     MatCard,
     ReactiveFormsModule,
     LocalCurrencyPipe,
+    IonModal,
   ],
 })
 export class CarritoComprasComponent implements ViewWillEnter, OnDestroy {
   clienteSeleccionado?: Cliente;
   productosCarritoCompras: Producto[] = [];
   private subscription?: Subscription;
+  currentProductDelete?: Producto;
 
   constructor(
     private clientesService: ClientesService,
     private router: Router,
     private carritoComprasService: CarritoComprasService,
+    private translate: TranslateService,
+    private _snackBar: MatSnackBar,
+    private crearPedidoService: CrearPedidoService,
   ) {}
 
   ionViewWillEnter() {
@@ -82,9 +92,15 @@ export class CarritoComprasComponent implements ViewWillEnter, OnDestroy {
     window.history.back();
   }
 
-  eliminarProducto(producto: Producto) {
-    this.carritoComprasService.removeFromCurrentCart(producto.product_id!);
+  eliminarProducto() {
+    this.carritoComprasService.removeFromCurrentCart(this.currentProductDelete!.product_id!);
+    this.translate.get('CARRITO_COMPRAS.PRODUCT_DELETED').subscribe((mensaje: string) => {
+      this._snackBar.open(mensaje, '', {
+        duration: 3000,
+      });
+    });
     this.obtenerProductosCarritoCompras();
+    this.currentProductDelete = undefined;
   }
 
   onChangeCantidad(producto: Producto) {
@@ -101,7 +117,36 @@ export class CarritoComprasComponent implements ViewWillEnter, OnDestroy {
     }, 0);
   }
 
-  realizarPedido() {}
+  realizarPedido() {
+    const pedido: CrearPedido = {
+      client_id: this.clienteSeleccionado!.client?.id!,
+      items: this.productosCarritoCompras.map(producto => ({
+        product_id: producto.product_id!,
+        quantity: producto.quantity_selected,
+      })),
+    };
+
+    this.crearPedidoService.crearPedido(pedido).subscribe({
+      next: () => {
+        this.translate
+          .get('CARRITO_COMPRAS.CONFIRM_PEDIDO_SUCCESS')
+          .subscribe((mensaje: string) => {
+            this._snackBar.open(mensaje, '', {
+              duration: 3000,
+            });
+          });
+        this.carritoComprasService.clearCurrentCart();
+        window.history.back();
+      },
+      error: () => {
+        this.translate.get('CARRITO_COMPRAS.CONFIRM_PEDIDO_ERROR').subscribe((mensaje: string) => {
+          this._snackBar.open(mensaje, '', {
+            duration: 3000,
+          });
+        });
+      },
+    });
+  }
 
   get disabledPedido() {
     return this.productosCarritoCompras.some(producto => {
