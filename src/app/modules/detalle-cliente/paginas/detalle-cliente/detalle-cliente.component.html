@@ -74,7 +74,11 @@
             </div>
             <div class="content-card">
               <div>
-                <span class="text-sm font-bold text-gray-400">&nbsp;{{ pedido.status }}</span>
+                <span class="text-sm font-bold text-gray-400"
+                  >&nbsp;{{
+                    pedido.status ? pedido.status : ('DETALLE-CLIENTE.STATUS_DEFAULT' | translate)
+                  }}</span
+                >
               </div>
               <div>
                 <button

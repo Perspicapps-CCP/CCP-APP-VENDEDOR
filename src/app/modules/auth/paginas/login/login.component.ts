@@ -62,7 +62,6 @@ export class LoginComponent {
       this.loginService.iniciarSesion(loginForm.username, loginForm.password).subscribe({
         error: error => {
           console.error('AUTH-ERROR: Fallo en login', JSON.stringify(error));
-          debugger;
           this.translate.get('LOGIN.ERROR_MESSAGE').subscribe((mensaje: string) => {
             this._snackBar.open(mensaje + error.message, '', {
               duration: 3000,

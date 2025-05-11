@@ -49,6 +49,27 @@ const mockCliente: Cliente = {
   phone: '3001234567',
   customer_image: 'https://example.com/image1.jpg',
   isRecentVisit: true,
+  client: {
+    id: '001',
+    full_name: 'Juan Pérez',
+    email: 'juan.perez@example.com',
+    username: 'juanp',
+    phone: '3001234567',
+    id_type: 'CC',
+    identification: '123456789',
+    created_at: new Date('2023-01-01'),
+    updated_at: new Date('2023-05-15'),
+    address: {
+      id: 'addr001',
+      line: 'Calle Principal 123',
+      neighborhood: 'Centro',
+      city: 'Bogotá',
+      state: 'Cundinamarca',
+      country: 'Colombia',
+      latitude: 4.60971,
+      longitude: -74.08175,
+    },
+  },
 };
 
 describe('CarritoComprasComponent', () => {
