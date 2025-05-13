@@ -50,12 +50,13 @@ describe('VideoService', () => {
   });
 
   it('should get videos from the API', () => {
-    service.obtenerVideos().subscribe(videos => {
+    const idCliente = 'cliente-001'; // ID de cliente de prueba
+    service.obtenerVideos(idCliente).subscribe(videos => {
       expect(videos).toEqual(mockVideos);
       expect(videos.length).toBe(2);
     });
 
-    const req = httpMock.expectOne(`${apiUrl}/inventory/stock/catalog/`);
+    const req = httpMock.expectOne(`${apiUrl}/api/v1/sales/sellers/clients/${idCliente}/videos`);
     expect(req.request.method).toBe('GET');
     req.flush(mockVideos);
   });

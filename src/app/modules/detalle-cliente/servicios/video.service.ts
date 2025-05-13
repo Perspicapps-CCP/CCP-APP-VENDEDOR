@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Video } from '../interfaces/videos.interface';
 import { environment } from 'src/environments/environment';
-import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -14,8 +13,10 @@ export class VideoService {
 
   constructor(private http: HttpClient) {}
 
-  obtenerVideos() {
-    return this.http.get<Video[]>(`${this.apiUrl}/inventory/stock/catalog/`);
+  obtenerVideos(idCliente: string) {
+    return this.http.get<Video[]>(
+      `${this.apiUrl}/api/v1/sales/sellers/clients/${idCliente}/videos`,
+    );
   }
 
   crearVideo(video: File[], descripcion: string, title: string, idCliente: string) {

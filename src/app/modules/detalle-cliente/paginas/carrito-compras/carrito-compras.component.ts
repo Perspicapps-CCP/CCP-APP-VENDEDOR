@@ -149,6 +149,10 @@ export class CarritoComprasComponent implements ViewWillEnter, OnDestroy {
   }
 
   get disabledPedido() {
+    if (this.productosCarritoCompras.length === 0) {
+      return true;
+    }
+
     return this.productosCarritoCompras.some(producto => {
       return producto.quantity_selected === 0 || producto.quantity_selected > producto.quantity;
     });
