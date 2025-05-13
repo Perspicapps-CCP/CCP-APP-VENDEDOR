@@ -61,7 +61,7 @@ export class DetalleVideosComponent implements ViewWillEnter {
   }
 
   obtenerVideos() {
-    this.videoService.obtenerVideos().subscribe(videos => {
+    this.videoService.obtenerVideos(this.clienteSeleccionado?.customer_id!).subscribe(videos => {
       this.videos = videos;
     });
   }
