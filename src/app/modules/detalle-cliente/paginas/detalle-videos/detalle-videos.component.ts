@@ -1,20 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AndroidPermissions } from '@awesome-cordova-plugins/android-permissions/ngx';
+import { File as CordovaFile } from '@awesome-cordova-plugins/file/ngx';
 import { CameraPreview } from '@capacitor-community/camera-preview';
 import { Capacitor } from '@capacitor/core';
 import {
+  AlertController,
   IonButton,
   IonButtons,
   IonContent,
   IonHeader,
   IonTitle,
   IonToolbar,
-  AlertController,
 } from '@ionic/angular/standalone';
 import { sharedImports } from 'src/app/shared/otros/shared-imports';
-import { Filesystem, Directory } from '@capacitor/filesystem';
-import { AndroidPermissions } from '@awesome-cordova-plugins/android-permissions/ngx';
-
+import { VideoServiceService } from '../../servicios/video-service.service';
+import { Directory, Filesystem } from '@capacitor/filesystem';
 @Component({
   selector: 'app-detalle-videos',
   templateUrl: './detalle-videos.component.html',
@@ -29,7 +30,7 @@ import { AndroidPermissions } from '@awesome-cordova-plugins/android-permissions
     IonHeader,
     CommonModule,
   ],
-  providers: [AndroidPermissions],
+  providers: [AndroidPermissions, CordovaFile],
 })
 export class DetalleVideosComponent implements OnInit, OnDestroy {
   @ViewChild('videoPlayer') videoPlayer!: ElementRef;
@@ -45,6 +46,8 @@ export class DetalleVideosComponent implements OnInit, OnDestroy {
   constructor(
     private androidPermissions: AndroidPermissions,
     private alertController: AlertController,
+    private videoServiceService: VideoServiceService,
+    private cordovaFile: CordovaFile,
   ) {}
 
   ngOnInit() {
@@ -312,32 +315,27 @@ export class DetalleVideosComponent implements OnInit, OnDestroy {
         path: tempPath,
         directory: Directory.Documents,
       });
+      console.log('Datos del archivo leídos:', JSON.stringify(fileData));
 
-      // Convertir a blob
-      const blob =
-        typeof fileData.data === 'string'
-          ? this.base64ToBlob(fileData.data, 'video/mp4')
-          : fileData.data;
+      if (fileData.data) {
+        // Convertir base64 a blob
+        const base64Response = await fetch(`data:video/mp4;base64,${fileData.data}`);
+        const blob = await base64Response.blob();
+        console.log('Tamaño del blob:', blob.size);
 
-      // Crear una URL para el blob
-      const blobUrl = URL.createObjectURL(blob);
-      this.videoUrl = blobUrl;
-
-      console.log('URL del video creada:', this.videoUrl);
-
-      // Guardar referencia al archivo para enviar más tarde
-      this.videoFileToUpload = new File([blob], fileName, { type: 'video/mp4' });
-
-      console.log(
-        'Archivo de video listo para enviar:',
-        this.videoFileToUpload.name,
-        'Tamaño:',
-        this.videoFileToUpload.size,
-      );
-
+        this.videoServiceService.crearVideo(blob, fileName).subscribe({
+          next: response => {
+            console.log('Video enviado al backend:', response);
+            // Aquí puedes manejar la respuesta del backend
+          },
+          error: error => {
+            console.error('Error al enviar el video al backend:', JSON.stringify(error));
+          },
+        });
+      }
       // Ya no llamamos a uploadVideoToBackend aquí, lo haremos cuando el usuario confirme
     } catch (error) {
-      console.error('Error al procesar el archivo de video:', error);
+      console.error('Error al procesar el archivo de video:', JSON.stringify(error));
     }
   }
 

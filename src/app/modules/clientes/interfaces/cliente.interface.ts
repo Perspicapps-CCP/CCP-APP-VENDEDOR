@@ -35,7 +35,7 @@ export interface Client {
 
 export interface Address {
   id: string;
-  line: string;
+  line?: string;
   neighborhood: string;
   city: string;
   state: string;
