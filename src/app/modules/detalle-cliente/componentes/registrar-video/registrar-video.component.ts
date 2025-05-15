@@ -5,12 +5,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { ClientesService } from 'src/app/modules/clientes/servicios/clientes.service';
 import { sharedImports } from 'src/app/shared/otros/shared-imports';
 import { VideoService } from '../../servicios/video.service';
+import { IonModal } from '@ionic/angular/standalone';
+import { GrabarVideoComponent } from '../grabar-video/grabar-video.component';
 
 @Component({
   selector: 'app-registrar-video',
   templateUrl: './registrar-video.component.html',
   styleUrls: ['./registrar-video.component.scss'],
-  imports: [ReactiveFormsModule, sharedImports],
+  imports: [ReactiveFormsModule, sharedImports, IonModal, GrabarVideoComponent],
 })
 export class RegistrarVideoComponent {
   @Output() closeModal = new EventEmitter<boolean>();
@@ -114,6 +116,19 @@ export class RegistrarVideoComponent {
             });
           this.closeModal.emit(false);
         },
+      });
+  }
+
+  updateVideo(video: File | null) {
+    this.translate
+      .get('DETALLE_VIDEOS.CREAR_VIDEO.FORM.VIDEO_CHARGED')
+      .subscribe((mensaje: string) => {
+        if (video) {
+          this.videoForm.patchValue({ videos: [video] });
+          this.videoForm.patchValue({ videos_text: `${1} ${mensaje}` });
+        }
+        this.videoForm.get('videos_text')?.markAsDirty();
+        this.videoForm.get('videos_text')?.markAsTouched();
       });
   }
 }

@@ -12,35 +12,48 @@
       [formGroup]="videoForm"
       (ngSubmit)="crearVideo()"
       class="flex flex-col w-full gap-[0.25rem]">
-      <div class="w-full min-h-[3.9375rem]">
-        <div class="input-group">
-          <button
-            class="btn btn-outline-secondary input-group-text"
-            type="button"
-            id="button-upload-video"
-            (click)="inputFile.click()">
-            {{ 'DETALLE_VIDEOS.CREAR_VIDEO.FORM.VIDEO_UPLOAD' | translate }}
-          </button>
-          <input
-            type="file"
-            class="hidden"
-            #inputFile
-            (change)="onFileSelected($event)"
-            accept="video/*" />
+      <div class="flex w-full min-h-[3.9375rem] gap-[0.25rem]">
+        <div>
+          <div class="input-group">
+            <button
+              class="btn btn-outline-secondary input-group-text"
+              type="button"
+              id="button-upload-video"
+              (click)="inputFile.click()">
+              {{ 'DETALLE_VIDEOS.CREAR_VIDEO.FORM.VIDEO_UPLOAD' | translate }}
+            </button>
+            <input
+              type="file"
+              class="hidden"
+              #inputFile
+              (change)="onFileSelected($event)"
+              accept="video/*" />
 
-          <input
-            (click)="inputFile.click()"
-            class="form-control cursor-pointer"
-            type="text"
-            id="videos_text"
-            name="videos_text"
-            [ngClass]="{ 'is-invalid': isInvalid('videos_text') }"
-            readonly
-            placeholder="{{ 'DETALLE_VIDEOS.CREAR_VIDEO.FORM.NOT_VIDEO' | translate }}"
-            formControlName="videos_text" />
-          <div class="invalid-feedback">
-            {{ getErrorMessage('videos_text').key | translate }}
+            <input
+              (click)="inputFile.click()"
+              class="form-control cursor-pointer"
+              type="text"
+              id="videos_text"
+              name="videos_text"
+              [ngClass]="{ 'is-invalid': isInvalid('videos_text') }"
+              readonly
+              placeholder="{{ 'DETALLE_VIDEOS.CREAR_VIDEO.FORM.NOT_VIDEO' | translate }}"
+              formControlName="videos_text" />
+            <div class="invalid-feedback">
+              {{ getErrorMessage('videos_text').key | translate }}
+            </div>
           </div>
+        </div>
+
+        <div>
+          <button
+            type="button"
+            class="btn btn-primary btn-actions btn-sm"
+            id="button-record-video"
+            placement="start"
+            [ngbTooltip]="'DETALLE_VIDEOS.CREAR_VIDEO.FORM.VIDEO_RECORD' | translate">
+            <mat-icon class="material-symbols-rounded">videocam</mat-icon>
+          </button>
         </div>
       </div>
 
@@ -85,3 +98,12 @@
     </form>
   </div>
 </div>
+
+<ion-modal trigger="button-record-video" #modalCrearVideos id="modal-videos">
+  <ng-template>
+    <app-grabar-video
+      (closeModal)="
+        modalCrearVideos.dismiss('', $event ? 'confirm' : 'cancel'); updateVideo($event)
+      "></app-grabar-video>
+  </ng-template>
+</ion-modal>

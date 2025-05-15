@@ -147,7 +147,8 @@
         "VIDEO_DESCRIPTION": "Enter a video description",
         "VIDEO_UPLOAD": "Upload",
         "NOT_VIDEO": "No video to upload",
-        "VIDEO_CHARGED": "video charged"
+        "VIDEO_CHARGED": "video charged",
+        "VIDEO_RECORD": "Record video"
       },
       "FORM_ERRORS": {
         "FIELD_REQUIRED": "This field is required",
@@ -161,6 +162,9 @@
         "SUCCESS": "Video created successfully",
         "ERROR": "Error creating video"
       }
+    },
+    "RECORD_VIDEO": {
+      "TITLE": "Record video"
     }
   },
   "DETALLE_VIDEO": {

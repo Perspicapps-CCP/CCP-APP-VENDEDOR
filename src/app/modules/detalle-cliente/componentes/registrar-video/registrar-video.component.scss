@@ -12,3 +12,16 @@
     font-weight: bold;
   }
 }
+
+.btn-actions {
+  padding: 6px 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.0625rem;
+  mat-icon {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+  }
+}
