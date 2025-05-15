@@ -311,15 +311,16 @@ export class DetalleVideosComponent implements OnInit, OnDestroy {
       });
 
       // Ahora leer el archivo desde Documents
-      const fileData = await Filesystem.readFile({
+      const fileUri = await Filesystem.getUri({
         path: tempPath,
         directory: Directory.Documents,
       });
-      console.log('Datos del archivo leídos:', JSON.stringify(fileData));
+      console.log('Datos del archivo leídos:', JSON.stringify(fileUri));
 
-      if (fileData.data) {
+      if (fileUri && fileUri.uri) {
+        const newUri = Capacitor.convertFileSrc(fileUri.uri);
         // Convertir base64 a blob
-        const base64Response = await fetch(`data:video/mp4;base64,${fileData.data}`);
+        const base64Response = await fetch(newUri);
         const blob = await base64Response.blob();
         console.log('Tamaño del blob:', blob.size);
 
@@ -337,17 +338,6 @@ export class DetalleVideosComponent implements OnInit, OnDestroy {
     } catch (error) {
       console.error('Error al procesar el archivo de video:', JSON.stringify(error));
     }
-  }
-
-  private base64ToBlob(base64: string, type: string): Blob {
-    const binaryString = window.atob(base64);
-    const bytes = new Uint8Array(binaryString.length);
-
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-
-    return new Blob([bytes], { type: type });
   }
 
   async uploadVideoToBackend(videoFile: File) {
