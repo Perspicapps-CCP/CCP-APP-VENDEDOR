@@ -58,7 +58,7 @@ const mockVideo: Video = {
   status: 'active',
   description: 'Descripción del video tutorial 1',
   url: 'https://example.com/video1',
-  recomendations: 'Recomendaciones para el video 1',
+  recomendation: 'Recomendaciones para el video 1',
 };
 
 describe('DetalleVideoComponent', () => {

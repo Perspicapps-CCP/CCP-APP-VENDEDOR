@@ -19,7 +19,7 @@ describe('VideoService', () => {
       status: 'active',
       description: 'Descripción del video tutorial 1',
       url: 'https://example.com/video1',
-      recomendations: 'Recomendaciones para el video 1',
+      recomendation: 'Recomendaciones para el video 1',
     },
     {
       id: 'video-002',
@@ -27,7 +27,7 @@ describe('VideoService', () => {
       status: 'active',
       description: 'Descripción del video tutorial 2',
       url: 'https://example.com/video2',
-      recomendations: 'Recomendaciones para el video 2',
+      recomendation: 'Recomendaciones para el video 2',
     },
   ];
 
