@@ -1,0 +1,9 @@
+/* Para la mayoría de navegadores */
+video::-webkit-media-controls-fullscreen-button {
+  display: none !important;
+}
+
+/* Para Firefox */
+.moz-fullscreen-button {
+  display: none !important;
+}

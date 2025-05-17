@@ -4,5 +4,5 @@ export interface Video {
   status: string;
   description: string;
   url: string;
-  recomendations: string;
+  recomendation: string;
 }

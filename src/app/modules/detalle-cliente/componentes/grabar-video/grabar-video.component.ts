@@ -72,6 +72,7 @@ export class GrabarVideoComponent implements OnInit, OnDestroy {
       if (!cameraPermissionStatus.hasPermission || !audioPermissionStatus.hasPermission) {
         // Si no tiene permisos, solicitarlos
         await this.solicitarPermisos();
+        this.agregarVideo();
       } else {
         this.permissionsGranted = true;
         this.agregarVideo();
